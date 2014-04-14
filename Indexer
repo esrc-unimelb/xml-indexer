@@ -5,7 +5,7 @@ import argparse
 import logging
 import ConfigParser
 import os.path
-from Timer import Timer
+from indexer.Timer import Timer
 
 if __name__ == "__main__":
 
@@ -83,7 +83,7 @@ if __name__ == "__main__":
             log.error("I think input folder is missing from the config: %s" % site_configuration)
             sys.exit()
 
-        from Crawler import Crawler
+        from indexer.Crawler import Crawler
         with Timer() as t:
             c = Crawler(input_folder, output_folder, excludes)
 
@@ -99,7 +99,7 @@ if __name__ == "__main__":
         log.debug("Output folder for transforms: %s" % output_folder)
         log.debug("Transforms: %s" % transforms)
 
-        from Transformer import Transformer
+        from indexer.Transformer import Transformer
         with Timer() as t:
             t = Transformer(input_folder, output_folder, transforms)
 
@@ -110,7 +110,7 @@ if __name__ == "__main__":
         log.debug("Content folder to be posted : %s" % input_folder)
         log.debug("Solr service: %s" % solr_service)
 
-        from Poster import Poster
+        from indexer.Poster import Poster
         with Timer() as t:
             p = Poster(input_folder, solr_service)
 
