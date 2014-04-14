@@ -1,9 +1,0 @@
-[crawl]
-input: /srv/ha/web/AHPI/testing
-excludes:
-
-[transform]
-;transforms: /home/mlarosa/src/indexer/config/transforms/AHPI
-
-[post]
-index: http://localhost:8080/solr/AHPI/
