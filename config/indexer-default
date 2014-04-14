@@ -1,5 +1,8 @@
 [GENERAL]
 
+# site configurations
+configs: /home/mlarosa/src/indexer/configs
+
 # cached data files path
 cache_path: /home/mlarosa/src/indexer/cache
 
