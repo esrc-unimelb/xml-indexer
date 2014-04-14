@@ -1,0 +1,7 @@
+[GENERAL]
+
+# cached data files path
+cache_path: /home/mlarosa/src/indexer/cache
+
+# default transformations
+transforms: /home/mlarosa/src/indexer/config/transforms
