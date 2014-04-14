@@ -1,10 +1,10 @@
 [GENERAL]
 
 # site configurations
-configs: /home/mlarosa/src/indexer/configs
+configs: /home/mlarosa/src/indexer/config
 
 # cached data files path
 cache_path: /home/mlarosa/src/indexer/cache
 
 # default transformations
-transforms: /home/mlarosa/src/indexer/config/transforms
+transforms: /home/mlarosa/src/indexer/config/transforms/default

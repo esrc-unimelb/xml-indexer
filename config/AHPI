@@ -1,12 +1,9 @@
 [crawl]
-input=/srv/ha/web/AHPI/testing
-output=/var/lib/indexer/AHPI/crawl
-exclude=browse*,eac_catalog.html,footer.html,assets,site
+input: /srv/ha/web/AHPI/testing
+excludes:
 
 [transform]
-input=/var/lib/indexer/AHPI/crawl
-output=/var/lib/indexer/AHPI/post
+;transforms: /home/mlarosa/src/indexer/config/transforms/AHPI
 
 [post]
-input=/var/lib/indexer/AHPI/post
-index=http://localhost:8080/solr/AHPI/
+index: http://localhost:8080/solr/AHPI/

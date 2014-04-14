@@ -1,0 +1,118 @@
+#!/usr/local/scholarly-python2/bin/python
+
+import sys
+import argparse
+import logging
+import ConfigParser
+import os.path
+from Timer import Timer
+
+if __name__ == "__main__":
+
+    # read and check the options
+    parser = argparse.ArgumentParser(description='eSRC Indexer')
+
+    parser.add_argument('--config', dest='config', required=True, help='The path to the default Indexer configuration.')
+    parser.add_argument('--site',   dest='site',   required=True, help='The site to process.')
+
+    parser.add_argument('--crawl',     dest='crawl',     action='store_true', help='Run the crawler to update the cache.')
+    parser.add_argument('--transform', dest='transform', action='store_true', help='Run the transformer over the cache.')
+    parser.add_argument('--post',      dest='post',      action='store_true', help='Submit the SOLR documents')
+
+    parser.add_argument('--info', dest='info', action='store_true', help='Turn on informational messages')
+    parser.add_argument('--debug', dest='debug', action='store_true', help='Turn on full debugging (includes --info)')
+
+    args = parser.parse_args()
+
+    # unless we specify otherwise
+    if args.debug:
+        logging.basicConfig(level=logging.DEBUG)
+
+    if args.info:
+        logging.basicConfig(level=logging.INFO)
+
+    if not (args.debug and args.info):
+        # just give us error messages
+        logging.basicConfig(level=logging.ERROR)
+
+    # get the logger
+    log = logging.getLogger('INDEXER')
+
+    # check the arguments
+    if not os.path.exists(args.config):
+        log.error("Does %s exist?" % args.config)
+        sys.exit()
+
+
+    def config_get(cfg, section, param):
+        if cfg.has_section(section) and cfg.has_option(section, param):
+            return cfg.get(section, param)
+        else:
+            return None
+
+    log.debug("Indexing: %s" % args.site)
+
+    # get the default configuration
+    cfg = ConfigParser.SafeConfigParser()
+    cfg.read(args.config)
+
+    site_configuration = os.path.join(config_get(cfg, 'GENERAL', 'configs'), args.site)
+    site_cache = os.path.join(config_get(cfg, 'GENERAL', 'cache_path'), args.site)
+    default_transforms = config_get(cfg, 'GENERAL', 'transforms')
+    log.debug("Configuration: %s" % site_configuration)
+    log.debug("Cache path: %s" % site_cache)
+
+    # then try to load the site specific config
+    if not os.path.exists(site_configuration):
+        log.error("Can't access %s" % site_configuration)
+        sys.exit()
+
+    # read in the site specific configuration and kick off the run
+    cfg.read(site_configuration)
+
+    # now process the request
+    if args.crawl:
+        input_folder = config_get(cfg, 'crawl', 'input')
+        output_folder = os.path.join(site_cache, args.site, 'crawl')
+        excludes = config_get(cfg, 'crawl', 'exclude')
+        log.debug("Input folder for crawl: %s" % input_folder)
+        log.debug("Output folder for content: %s" % input_folder)
+        log.debug("Excludes list: %s" % excludes)
+
+        if input_folder is None:
+            log.error("I think input folder is missing from the config: %s" % site_configuration)
+            sys.exit()
+
+        from Crawler import Crawler
+        with Timer() as t:
+            c = Crawler(input_folder, output_folder, excludes)
+
+    if args.transform:
+        input_folder = os.path.join(site_cache, 'crawl')
+        output_folder = os.path.join(site_cache, 'post')
+        transforms = config_get(cfg, 'transform', 'transforms')
+
+        if not transforms:
+            transforms = default_transforms
+
+        log.debug("Content folder to be transformed: %s" % input_folder)
+        log.debug("Output folder for transforms: %s" % output_folder)
+        log.debug("Transforms: %s" % transforms)
+
+        from Transformer import Transformer
+        with Timer() as t:
+            t = Transformer(input_folder, output_folder, transforms)
+
+    if args.post:
+        input_folder = os.path.join(site_cache, 'post')
+        solr_service = config_get(cfg, 'post', 'index')
+
+        log.debug("Content folder to be posted : %s" % input_folder)
+        log.debug("Solr service: %s" % solr_service)
+
+        from Poster import Poster
+        with Timer() as t:
+            p = Poster(input_folder, solr_service)
+
+
+
