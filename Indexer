@@ -6,18 +6,24 @@ import logging
 import ConfigParser
 import os.path
 from indexer.Timer import Timer
+from indexer.Crawler import Crawler
+from indexer.Transformer import Transformer
+from indexer.Poster import Poster
 
 if __name__ == "__main__":
 
     # read and check the options
     parser = argparse.ArgumentParser(description='eSRC Indexer')
 
-    parser.add_argument('--config', dest='config', required=True, help='The path to the default Indexer configuration.')
-    parser.add_argument('--site',   dest='site',   required=True, help='The site to process.')
+    parser.add_argument('--config',   dest='config', required=True, help='The path to the default Indexer configuration.')
+    parser.add_argument('--site',     dest='site',   required=True, help='The site to process.')
 
-    parser.add_argument('--crawl',     dest='crawl',     action='store_true', help='Run the crawler to update the cache.')
-    parser.add_argument('--transform', dest='transform', action='store_true', help='Run the transformer over the cache.')
-    parser.add_argument('--post',      dest='post',      action='store_true', help='Submit the SOLR documents')
+    parser.add_argument('--transform-document', dest='transform_document', default=None,
+        help='Transform a single document and write the result to STDOUT.')
+    parser.add_argument('--transform-document-type', dest='transform_document_type', choices = ['xml', 'html'], default=None,
+        help='Transform a single document and write the result to STDOUT.')
+    parser.add_argument('--post-document', dest='post_document', default=None,
+        help='Post this document to SOLR.')
 
     parser.add_argument('--info', dest='info', action='store_true', help='Turn on informational messages')
     parser.add_argument('--debug', dest='debug', action='store_true', help='Turn on full debugging (includes --info)')
@@ -43,6 +49,9 @@ if __name__ == "__main__":
         log.error("Does %s exist?" % args.config)
         sys.exit()
 
+    if args.transform_document and not args.transform_document_type:
+        log.error("If you specify a doc to transform via --transform-document, you must also state its type via --transform-document-type")
+        sys.exit()
 
     def config_get(cfg, section, param):
         if cfg.has_section(section) and cfg.has_option(section, param):
@@ -71,48 +80,48 @@ if __name__ == "__main__":
     cfg.read(site_configuration)
 
     # now process the request
-    if args.crawl:
-        input_folder = config_get(cfg, 'crawl', 'input')
-        output_folder = os.path.join(site_cache, args.site, 'crawl')
-        excludes = config_get(cfg, 'crawl', 'exclude')
-        log.debug("Input folder for crawl: %s" % input_folder)
-        log.debug("Output folder for content: %s" % input_folder)
-        log.debug("Excludes list: %s" % excludes)
+    input_folder = config_get(cfg, 'crawl', 'input')
+    excludes = config_get(cfg, 'crawl', 'excludes')
+    log.debug("Input folder for crawl: %s" % input_folder)
+    log.debug("Output folder for content: %s" % input_folder)
+    log.debug("Excludes list: %s" % excludes)
 
-        if input_folder is None:
-            log.error("I think input folder is missing from the config: %s" % site_configuration)
-            sys.exit()
+    if input_folder is None:
+        log.error("I think input folder is missing from the config: %s" % site_configuration)
+        sys.exit()
 
-        from indexer.Crawler import Crawler
-        with Timer() as t:
-            c = Crawler(input_folder, output_folder, excludes)
+    with Timer() as t:
+        c = Crawler(input_folder, excludes)
+        files_list = c.run()
 
-    if args.transform:
-        input_folder = os.path.join(site_cache, 'crawl')
-        output_folder = os.path.join(site_cache, 'post')
-        transforms = config_get(cfg, 'transform', 'transforms')
+    # transformer stage
+    output_folder = os.path.join(site_cache, 'post')
+    transforms = config_get(cfg, 'transform', 'transforms')
 
-        if not transforms:
-            transforms = default_transforms
+    if not transforms:
+        transforms = default_transforms
 
-        log.debug("Content folder to be transformed: %s" % input_folder)
-        log.debug("Output folder for transforms: %s" % output_folder)
-        log.debug("Transforms: %s" % transforms)
+    log.debug("Output folder for transforms: %s" % output_folder)
+    log.debug("Transforms: %s" % transforms)
 
-        from indexer.Transformer import Transformer
-        with Timer() as t:
-            t = Transformer(input_folder, output_folder, transforms)
+    with Timer() as t:
+        t = Transformer(files_list, output_folder, transforms)
+        if args.transform_document is not None:
+            t.process_document((args.transform_document, args.transform_document_type), debug=True)
+        else:
+            t.run()
 
-    if args.post:
-        input_folder = os.path.join(site_cache, 'post')
-        solr_service = config_get(cfg, 'post', 'index')
-
-        log.debug("Content folder to be posted : %s" % input_folder)
-        log.debug("Solr service: %s" % solr_service)
-
-        from indexer.Poster import Poster
-        with Timer() as t:
-            p = Poster(input_folder, solr_service)
+#
+#
+#    post stage
+#    input_folder = os.path.join(site_cache, 'post')
+#    solr_service = config_get(cfg, 'post', 'index')
+#
+#    log.debug("Content folder to be posted : %s" % input_folder)
+#    log.debug("Solr service: %s" % solr_service)
+#
+#    with Timer() as t:
+#        p = Poster(input_folder, solr_service)
 
 
 
