@@ -80,7 +80,6 @@ if __name__ == "__main__":
     cfg.read(site_configuration)
 
     ### CRAWL THE SOURCE FOLDER
-
     files_list = []
     if not args.transform_document:
         ### Only do the crawl if the user is not requesting to specifically
@@ -99,7 +98,7 @@ if __name__ == "__main__":
             c = Crawler(input_folder, excludes)
             files_list = c.run()
 
-    # transformer stage
+    ### TRANSFORM THE CONTENT MARKED FOR INGESTION INTO SOLR
     output_folder = os.path.join(site_cache, 'post')
     transforms = config_get(cfg, 'transform', 'transforms')
 
@@ -116,17 +115,16 @@ if __name__ == "__main__":
         else:
             t.run()
 
-#
-#
-#    post stage
-#    input_folder = os.path.join(site_cache, 'post')
-#    solr_service = config_get(cfg, 'post', 'index')
-#
-#    log.debug("Content folder to be posted : %s" % input_folder)
-#    log.debug("Solr service: %s" % solr_service)
-#
-#    with Timer() as t:
-#        p = Poster(input_folder, solr_service)
+
+    ### POST THE SOLR DOCUMENTS TO THE INDEX
+    input_folder = os.path.join(site_cache, 'post')
+    solr_service = config_get(cfg, 'post', 'index')
+
+    log.debug("Content folder to be posted : %s" % input_folder)
+    log.debug("Solr service: %s" % solr_service)
+
+    with Timer() as t:
+        p = Poster(input_folder, solr_service)
 
 
 
