@@ -14,6 +14,4 @@ class Timer:
     def __exit__(self, *args):
         self.interval = datetime.datetime.now() - self.start
         s = self.interval.seconds
-        self.hours, remainder = divmod(s, 3600)
-        self.minutes, self.seconds = divmod(remainder, 60)
-        log.info("Run time: {0} hours, {1} minutes and {2} seconds".format(self.hours, self.minutes, s))
+        log.info("Run time: %s seconds" % s)
