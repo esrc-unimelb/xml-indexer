@@ -3,6 +3,10 @@ import sys
 import logging
 import os.path
 from lxml import etree, html
+from clean.empty import elements
+from clean.date import date_cleanser
+from clean.markup import markup_cleanser
+
 log = logging.getLogger('TRANSFORMER')
 
 class Transformer:
@@ -19,13 +23,28 @@ class Transformer:
         # how to process it
         self.transforms = transforms
 
+        # the names of the fields which could have a date
+        self.date_fields = [ 'start_date', 'end_date' ]
+
+        # the names of the fields which could have markup
+        self.markup_fields = [ 'text' ]
+
         log.info('Transformer initialised')
 
     def run(self):
+        log.info("Transforing the content found")
+        """Process each document in the input files_list"""
         for f in self.files_list:
             self.process_document(f)
 
     def process_document(self, doc, debug=False):
+        """The code to actually process the document
+
+        @params:
+        - doc: the path to a document to try and transform
+        - debug: false (default): if set to true - transformed
+            doc gets written to STDOUT for viewing
+        """
         # figure out its type
         if doc[1] == 'xml':
             try:
@@ -56,6 +75,19 @@ class Transformer:
 
         # transform it!
         d = xsl(tree)
+
+        # clean the date entries for solr
+        self._clean_dates(d)
+
+        try:
+            # clean the fields with markup
+            self._clean_markup(d)
+        except ValueError:
+            log.error("I think there's something wrong with the transformed result of: %s" % doc[0])
+
+        # strip empty elements - dates in particular cause
+        #  solr to barf horribly...
+        elements().strip_empty_elements(d)
 
         # when testing against a single document, this is the line that spits
         #  the result to stdout for viewing
@@ -94,6 +126,38 @@ class Transformer:
         # it's some other kind of html document so just slurp the body
         return 'body.xsl'
         
-        # load a suitable transform
-        # transform it 
-        # store the result
+    def _clean_dates(self, doc):
+        """Date data needs to be in Solr date format
+
+        The format for this date field is of the form 1995-12-31T23:59:59Z,
+
+        @params:
+        doc: the XML document
+        """
+        date_elements = [ e for e in doc.iter() if e.get('name') in self.date_fields ]
+        for e in date_elements:
+            # have we found an empty or missing date field ?
+            if e.text is None:
+                continue
+
+            #dc = date_cleanser(self.date_fields)
+            dc = date_cleanser()
+            datevalue = dc.clean(e.text)
+            e.text = datevalue
+
+    def _clean_markup(self, doc):
+        """We don't want markup in the content being indexed
+
+        @params:
+        doc: the XML document
+        """
+        markup_elements = [ e for e in doc.iter() if e.get('name') in self.markup_fields ]
+        for e in markup_elements:
+            # have we found an empty or missing date field ?
+            if e.text is None:
+                continue
+
+            e.text = markup_cleanser().clean(e.text)
+
+
+
