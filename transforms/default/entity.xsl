@@ -15,53 +15,32 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+<xsl:stylesheet 
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+    xmlns:str="http://exslt.org/strings"
+    extension-element-prefixes="str"
+    version="1.0">
     <xsl:output method="text" indent="yes" encoding="UTF-8" omit-xml-declaration="yes" />
     <xsl:template match="/">
         <add>
             <doc>
-                <!-- control -->
-                <field name="id"><xsl:value-of select="/eac-cpf/control/recordId" /></field>
-                <xsl:if test="/eac-cpf/control/localControl/@localType != ''">
-                    <field name="localtype"><xsl:value-of select="/eac-cpf/control/localControl/term" /></field>
-                </xsl:if>
-                <!-- identity -->
-                <field name="entityId"><xsl:value-of select="/eac-cpf/cpfDescription/identity/entityId" /></field>
-                <field name="type"><xsl:value-of select="/eac-cpf/cpfDescription/identity/entityType" /></field>
-                <field name="title">
-                    <xsl:for-each select="/doc:eac-cpf/doc:cpfDescription/doc:identity/doc:nameEntry/doc:part">
-                        <xsl:value-of select="." />
-                        <xsl:text> </xsl:text>
-                    </xsl:for-each>
-                </field>
-                <!-- description -->
-                <xsl:if test="/eac-cpf/cpfDescription/description/existDates/dateRange/fromDate/@standardDate != ''">
-                    <field name="fromDate"><xsl:value-of select="/eac-cpf/cpfDescription/description/existDates/dateRange/fromDate/@standardDate"/>T00:00:00Z</field>
-                </xsl:if>
-                <xsl:if test="/eac-cpf/cpfDescription/description/existDates/dateRange/toDate/@standardDate != ''">
-                    <field name="toDate"><xsl:value-of select="/eac-cpf/cpfDescription/description/existDates/dateRange/toDate/@standardDate"/>T00:00:00Z</field>
-                </xsl:if>
-                <xsl:apply-templates select="functions" />
-                <!-- abstract: include all content from the biogHist -->
-                <field name="abstract">
-                    <xsl:for-each select="/eac-cpf/cpfDescription/description/biogHist/*">
-                        <xsl:value-of select="." />
-                        <xsl:text> </xsl:text>
-                    </xsl:for-each>
-                </field>
-                <!-- relations -->
-                <xsl:for-each select="/doc:eac-cpf/doc:cpfDescription/doc:relations/doc:cpfRelation/doc:relationEntry">
-                    <field name="relation"><xsl:value-of select="." /></field>
-                </xsl:for-each>
-                <xsl:for-each select="/doc:eac-cpf/doc:cpfDescription/doc:relations/doc:resourceRelation/doc:relationEntry">
-                    <field name="relation"><xsl:value-of select="." /></field>
-                </xsl:for-each>
+                <field name="id"><xsl:value-of select="//meta[@name='DC.Identifier']/@content" /></field>
+                <field name="type">Entity</field>
+                <field name="creator"><xsl:value-of select="//meta[@name='DC.Creator']/@content" /></field>
+                <field name="name"><xsl:value-of select="//meta[@name='DC.Title']/@content" /></field>
+                <field name="name"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='altname']/ul/li" /></field>
+                <field name="start_date"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='startdate']" /></field>
+                <field name="end_date"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='enddate']" /></field>
+                <xsl:apply-templates select="//dl[@class='content-summary']/dd[@class='function']" />
+                <field name="text"><xsl:value-of select="//div[@class='entry-details-container']"/></field>
+
             </doc>
         </add>
     </xsl:template>
-
-    <xsl:template name="functions" match="/doc:eac-cpf/doc:cpfDescription/doc:description/doc:functions/doc:function">
-        <field name="function"><xsl:value-of select="doc:term"/></field>
+    <xsl:template match="//dl[@class='content-summary']/dd[@class='function']">
+        <xsl:variable name="function" select="//dl[@class='content-summary']/dd[@class='function']" />
+        <xsl:template select="str:split($function, ',')">
+            <field name="function"><xsl:value-of select="." /></field>
+        </xsl:template>
     </xsl:template>
-
 </xsl:stylesheet>
