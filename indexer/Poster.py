@@ -1,6 +1,6 @@
 
 import logging
-log = logging.getLogger()
+log = logging.getLogger('POSTER')
 
 class Poster:
 
