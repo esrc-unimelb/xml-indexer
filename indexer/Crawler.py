@@ -20,6 +20,7 @@ class Crawler:
         log.info('Crawler initialised')
 
     def run(self):
+        log.info("Crawling %s" % self.input_folder)
 
         # walk the content folder, generating list of 
         #  available content => self.input_folder
