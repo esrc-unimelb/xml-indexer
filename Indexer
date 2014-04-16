@@ -79,20 +79,25 @@ if __name__ == "__main__":
     # read in the site specific configuration and kick off the run
     cfg.read(site_configuration)
 
-    # now process the request
-    input_folder = config_get(cfg, 'crawl', 'input')
-    excludes = config_get(cfg, 'crawl', 'excludes')
-    log.debug("Input folder for crawl: %s" % input_folder)
-    log.debug("Output folder for content: %s" % input_folder)
-    log.debug("Excludes list: %s" % excludes)
+    ### CRAWL THE SOURCE FOLDER
 
-    if input_folder is None:
-        log.error("I think input folder is missing from the config: %s" % site_configuration)
-        sys.exit()
+    files_list = []
+    if not args.transform_document:
+        ### Only do the crawl if the user is not requesting to specifically
+        ###  process a single file; this is usually testing
+        input_folder = config_get(cfg, 'crawl', 'input')
+        excludes = config_get(cfg, 'crawl', 'excludes')
+        log.debug("Input folder for crawl: %s" % input_folder)
+        log.debug("Output folder for content: %s" % input_folder)
+        log.debug("Excludes list: %s" % excludes)
 
-    with Timer() as t:
-        c = Crawler(input_folder, excludes)
-        files_list = c.run()
+        if input_folder is None:
+            log.error("I think input folder is missing from the config: %s" % site_configuration)
+            sys.exit()
+
+        with Timer() as t:
+            c = Crawler(input_folder, excludes)
+            files_list = c.run()
 
     # transformer stage
     output_folder = os.path.join(site_cache, 'post')
