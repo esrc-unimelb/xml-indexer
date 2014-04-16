@@ -3,8 +3,9 @@ import os
 import re
 import logging
 import magic
+import urlparse
 from lxml import html, etree
-log = logging.getLogger()
+log = logging.getLogger('CRAWLER')
 
 class Crawler:
 
@@ -59,8 +60,29 @@ class Crawler:
                 #  everything else: we use the html
                 data = tree.xpath('//meta[@name="EAC"]')
                 if data:
-                    log.debug("Using the XML content for: %s" % file_handle)
-                    files_list.append((data[0].attrib['content'], 'xml'))
+                    try:
+                        # we need to confirm that we can get the XML (ie that
+                        #  the URL is correct) otherwise just use the HTML file
+                        tree = etree.parse(data[0].attrib['content'])
+                        files_list.append((data[0].attrib['content'], 'xml'))
+                    except IOError:
+                        ### THIS IS A HACK
+                        # findandconnect XML files are no longer accessible from the root
+                        #  via /{STATE}/eac/{XML FILE} - they are now one level further down
+                        #  as /ref/{STATE}/eac/{XML FILE}.
+                        #
+                        # SO - if we get to here, insert '/ref' into the root and try again
+                        #  (we're assuming it's a convention) and if that fails - just give up.
+                        url = urlparse.urlsplit(data[0].attrib['content'])
+                        second_shot = "%s://%s/ref%s" % (url.scheme, url.netloc, url.path)
+                        try:
+                            tree = etree.parse(second_shot)
+                            log.debug("Using the XML content for: %s" % file_handle)
+                            files_list.append((second_shot, 'xml'))
+                        except IOError:
+                            log.debug("Using the HTML content for: %s" % file_handle)
+                            files_list.append((file_handle, 'html'))
+
                 else:
                     log.debug("Using the HTML content for: %s" % file_handle)
                     files_list.append((file_handle, 'html'))
