@@ -9,13 +9,16 @@ log = logging.getLogger('CRAWLER')
 
 class Crawler:
 
-    def __init__(self, input_folder, excludes):
+    def __init__(self, input_folder, excludes, source):
         # what to index
         self.input_folder = input_folder
 
         # what to exclude
         #self.excludes = excludes.split(',')
         self.excludes = [ re.compile(e.strip()) for e in excludes.split(',') ] if excludes is not None else None
+
+        # whether the source should be re-mapped for file loads
+        self.source = source
 
         log.info('Crawler initialised')
 
@@ -61,28 +64,17 @@ class Crawler:
                 #  everything else: we use the html
                 data = tree.xpath('//meta[@name="EAC"]')
                 if data:
-                    try:
-                        # we need to confirm that we can get the XML (ie that
-                        #  the URL is correct) otherwise just use the HTML file
-                        tree = etree.parse(data[0].attrib['content'])
-                        files_list.append((data[0].attrib['content'], 'xml'))
-                    except IOError:
-                        ### THIS IS A HACK
-                        # findandconnect XML files are no longer accessible from the root
-                        #  via /{STATE}/eac/{XML FILE} - they are now one level further down
-                        #  as /ref/{STATE}/eac/{XML FILE}.
-                        #
-                        # SO - if we get to here, insert '/ref' into the root and try again
-                        #  (we're assuming it's a convention) and if that fails - just give up.
-                        url = urlparse.urlsplit(data[0].attrib['content'])
-                        second_shot = "%s://%s/ref%s" % (url.scheme, url.netloc, url.path)
-                        try:
-                            tree = etree.parse(second_shot)
-                            log.debug("Using the XML content for: %s" % file_handle)
-                            files_list.append((second_shot, 'xml'))
-                        except IOError:
-                            log.debug("Using the HTML content for: %s" % file_handle)
-                            files_list.append((file_handle, 'html'))
+                    # we need to confirm that we can get the XML (ie that
+                    #  the URL is correct) otherwise just use the HTML file
+                    source = data[0].attrib['content']
+                    source = source.replace(self.source[0].strip(), self.source[1].strip())
+                    if os.path.exists(source):
+                        log.debug("Using the XML content for: %s" % file_handle)
+                        files_list.append((source, 'xml'))
+                    else:
+                        log.warn("Found XML datafile for %s but couldn't retrieve it" % file_handle)
+                        log.debug("Using the HTML content for: %s" % file_handle)
+                        files_list.append((file_handle, 'html'))
 
                 else:
                     log.debug("Using the HTML content for: %s" % file_handle)
