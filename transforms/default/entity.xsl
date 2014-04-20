@@ -33,14 +33,15 @@
                 <field name="end_date"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='enddate']" /></field>
                 <xsl:apply-templates select="//dl[@class='content-summary']/dd[@class='function']" />
                 <field name="text"><xsl:value-of select="//div[@class='entry-details-container']"/></field>
-
             </doc>
         </add>
     </xsl:template>
     <xsl:template match="//dl[@class='content-summary']/dd[@class='function']">
         <xsl:variable name="function" select="//dl[@class='content-summary']/dd[@class='function']" />
+        <!--
         <xsl:template select="str:split($function, ',')">
             <field name="function"><xsl:value-of select="." /></field>
         </xsl:template>
+        -->
     </xsl:template>
 </xsl:stylesheet>
