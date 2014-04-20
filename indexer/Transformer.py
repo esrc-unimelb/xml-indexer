@@ -52,15 +52,14 @@ class Transformer:
             except IOError:
                 log.error("Couldn't load %s. Skipping it.." % doc[0])
                 return
-            transform = os.path.join(self.transforms, 'eac.xsl')
         else:
             try:
                 tree = html.parse(doc[0])
             except IOError:
                 log.error("Couldn't load %s. Skipping it." % doc[0])
                 return
-            transform = os.path.join(self.transforms, self._get_transform(tree))
 
+        transform = self._get_transform(tree)
         log.debug("Transforming %s with %s" % (doc[0], transform))
         try:
             xsl = etree.parse(transform)
@@ -111,21 +110,39 @@ class Transformer:
 
 
     def _get_transform(self, tree):
-        if tree.xpath('//body[@id="entity"]'):
-            return 'entity.xsl'
+        # we're we given an XML tree or a HTML tree
+        root = tree.getroot()
 
-        if tree.xpath('//body[@id="pub"]'):
-            return 'pub.xsl'
+        if root.tag == 'html':
+            if tree.xpath('//body[@id="entity"]'):
+                t = 'entity.xsl'
 
-        if tree.xpath('//body[@id="arc"]'):
-            return 'arc.xsl'
+            elif tree.xpath('//body[@id="pub"]'):
+                t = 'pub.xsl'
 
-        if tree.xpath('//body[@id="dobject"]'):
-            return 'dobject.xsl'
+            elif tree.xpath('//body[@id="arc"]'):
+                t = 'arc.xsl'
 
-        # it's some other kind of html document so just slurp the body
-        return 'body.xsl'
-        
+            elif tree.xpath('//body[@id="dobject"]'):
+                t = 'dobject.xsl'
+
+            else:
+                # it's some other kind of html document so just slurp the body
+                t = 'body.xsl'
+
+        else:
+            t = 'eac.xsl'
+
+        for transform_path in self.transforms:
+            transform = os.path.join(transform_path, t)
+            if os.path.exists(transform):
+                return transform
+
+        # if we get to here - we didn't find a specific transform
+        #  so just use the body transform
+        for transform_path in self.transforms:
+            return os.path.join(transform_path, 'body.xsl')
+
     def _clean_dates(self, doc):
         """Date data needs to be in Solr date format
 
