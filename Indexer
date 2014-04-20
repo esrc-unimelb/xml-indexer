@@ -86,16 +86,17 @@ if __name__ == "__main__":
         ###  process a single file; this is usually testing
         input_folder = config_get(cfg, 'crawl', 'input')
         excludes = config_get(cfg, 'crawl', 'excludes')
+        source = config_get(cfg, 'crawl', 'source').split(',')
         log.debug("Input folder for crawl: %s" % input_folder)
-        log.debug("Output folder for content: %s" % input_folder)
         log.debug("Excludes list: %s" % excludes)
+        log.debug("Map to source: %s" % source)
 
         if input_folder is None:
             log.error("I think input folder is missing from the config: %s" % site_configuration)
             sys.exit()
 
         with Timer() as t:
-            c = Crawler(input_folder, excludes)
+            c = Crawler(input_folder, excludes, source)
             files_list = c.run()
 
     ### TRANSFORM THE CONTENT MARKED FOR INGESTION INTO SOLR
@@ -104,9 +105,11 @@ if __name__ == "__main__":
 
     if not transforms:
         transforms = default_transforms
+    else:
+        transforms = [ transforms, default_transforms ]
 
     log.debug("Output folder for transforms: %s" % output_folder)
-    log.debug("Transforms: %s" % transforms)
+    log.debug("Transform search path: %s" % transforms)
 
     with Timer() as t:
         t = Transformer(files_list, output_folder, transforms)
