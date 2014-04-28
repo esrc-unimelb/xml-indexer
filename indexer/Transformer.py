@@ -11,9 +11,12 @@ log = logging.getLogger('TRANSFORMER')
 
 class Transformer:
 
-    def __init__(self, files_list, output_folder, transforms):
+    def __init__(self, files_list, site, output_folder, transforms):
         # what to process
         self.files_list = files_list
+
+        # the site code
+        self.site = site
 
         # where to stash the output
         self.output_folder = output_folder
@@ -93,6 +96,14 @@ class Transformer:
         if debug:
             print etree.tostring(d, pretty_print=True)
 
+        # add in the metadata the indexer users
+        tmp = d.xpath('/add/doc')[0]
+
+        # add the solr unique id field 
+        site_code = etree.Element('field', name='site_code')
+        site_code.text = self.site
+        tmp.append(site_code)
+
         # now we want to save the document to self.output_folder
         #
         # To ensure we never get a name clash, use the value of id as the filename,
@@ -107,7 +118,6 @@ class Transformer:
         log.debug("Writing output to: %s" % output_file)
         with open(output_file, 'w') as f:
             f.write(etree.tostring(d, pretty_print=True))
-
 
     def _get_transform(self, tree):
         # we're we given an XML tree or a HTML tree
