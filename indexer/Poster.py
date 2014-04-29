@@ -1,7 +1,7 @@
 
 import logging
 import os
-from index import Index
+from Index import Index
 from lxml import etree
 log = logging.getLogger('POSTER')
 
@@ -20,10 +20,13 @@ class Poster:
         log.info('Poster initialised')
         
     def run(self):
+        idx = Index(self.solr_service, self.site)
         for (dirpath, dirnames, filenames) in os.walk(self.input_folder):
             for f in filenames:
                 file_handle = os.path.join(dirpath, f)
 
-                idx = Index(self.solr_service, self.site)
                 doc = etree.parse(file_handle)
                 idx.submit(etree.tostring(doc), file_handle)
+
+        idx.commit()
+        idx.optimize()
