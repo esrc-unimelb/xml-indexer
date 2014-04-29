@@ -63,9 +63,9 @@ if __name__ == "__main__":
     parser.add_argument('--config',   dest='config', required=True, help='The path to the default Indexer configuration.')
     parser.add_argument('--site',     dest='site',   required=True, help='The site to process.')
 
-    parser.add_argument('--transform-document', dest='transform_document', required=True,
+    parser.add_argument('--doc', dest='transform_document', required=True,
         help='Transform a single document and write the result to STDOUT.')
-    parser.add_argument('--transform-document-type', dest='transform_document_type', choices = ['xml', 'html'], required=True,
+    parser.add_argument('--type', dest='transform_document_type', choices = ['xml', 'html'], required=True,
         help='Transform a single document and write the result to STDOUT.')
 
     args = parser.parse_args()
