@@ -1,7 +1,7 @@
 import datetime
 import logging
 
-log = logging.getLogger()
+log = logging.getLogger('TIMER')
 
 class Timer:
     """
