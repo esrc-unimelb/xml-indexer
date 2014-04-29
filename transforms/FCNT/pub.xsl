@@ -21,13 +21,17 @@
         <add>
             <doc>
                 <field name="id"><xsl:value-of select="//meta[@name='DC.Identifier']/@content" /></field>
+                <field name="type">Publication</field>
                 <field name="creator"><xsl:value-of select="//meta[@name='DC.Creator']/@content" /></field>
-                <field name="type">Text</field>
                 <field name="name"><xsl:value-of select="//meta[@name='DC.Title']/@content" /></field>
                 <field name="name"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='title']" /></field>
-                <field name="text"><xsl:value-of select="//body" /></field>
-                <field name="state">Australian Capital Territory</field>
-                <field name="state">ACT</field>
+                <field name="name"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='secondarytitle']" /></field>
+                <field name="author"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='author']" /></field>
+                <field name="editor"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='secondaryauthor']" /></field>
+                <field name="imprint"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='imprint']" /></field>
+                <field name="url"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='url']" /></field>
+                <field name="state">Northern Territory</field>
+                <field name="state">NT</field>
             </doc>
         </add>
     </xsl:template>

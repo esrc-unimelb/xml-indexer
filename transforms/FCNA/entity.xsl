@@ -15,20 +15,35 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+<xsl:stylesheet 
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+    xmlns:str="http://exslt.org/strings"
+    extension-element-prefixes="str"
+    version="1.0">
     <xsl:output method="text" indent="yes" encoding="UTF-8" omit-xml-declaration="yes" />
     <xsl:template match="/">
         <add>
             <doc>
                 <field name="id"><xsl:value-of select="//meta[@name='DC.Identifier']/@content" /></field>
+                <field name="type">Entity</field>
                 <field name="creator"><xsl:value-of select="//meta[@name='DC.Creator']/@content" /></field>
-                <field name="type">Text</field>
                 <field name="name"><xsl:value-of select="//meta[@name='DC.Title']/@content" /></field>
-                <field name="name"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='title']" /></field>
-                <field name="text"><xsl:value-of select="//body" /></field>
-                <field name="state">Australian Capital Territory</field>
-                <field name="state">ACT</field>
+                <field name="name"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='altname']/ul/li" /></field>
+                <field name="date_from"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='startdate']" /></field>
+                <field name="date_to"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='enddate']" /></field>
+                <xsl:apply-templates select="//dl[@class='content-summary']/dd[@class='function']" />
+                <field name="text"><xsl:value-of select="//div[@class='entry-details-container']"/></field>
+                <field name="state">Australia</field>
+                <field name="state">AU</field>
             </doc>
         </add>
+    </xsl:template>
+    <xsl:template match="//dl[@class='content-summary']/dd[@class='function']">
+        <xsl:variable name="function" select="//dl[@class='content-summary']/dd[@class='function']" />
+        <!--
+        <xsl:template select="str:split($function, ',')">
+            <field name="function"><xsl:value-of select="." /></field>
+        </xsl:template>
+        -->
     </xsl:template>
 </xsl:stylesheet>

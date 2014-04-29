@@ -24,7 +24,7 @@
         <add>
             <doc>
                 <field name="id"><xsl:value-of select="/n:eac-cpf/n:cpfDescription/n:identity/n:entityId" /></field>
-                <field name="type">Entity</field>
+                <!--<field name="type">Entity</field>-->
                 <field name="type"><xsl:value-of select="/n:eac-cpf/n:cpfDescription/n:identity/n:entityType" /></field>
                 <field name="creator"><xsl:value-of select="/nothere"/></field>
                 <field name="name"><xsl:value-of select="/n:eac-cpf/n:cpfDescription/n:identity/n:nameEntry/n:part" /></field>
@@ -34,6 +34,11 @@
                 <field name="text">
                     <xsl:value-of select="/n:eac-cpf/n:cpfDescription/n:description/n:biogHist/n:abstract" />
                     <xsl:apply-templates select="/n:eac-cpf/n:cpfDescription/n:description/n:biogHist/n:p" />
+                </field>
+                <field name="state">Victoria</field>
+                <field name="state">VIC</field>
+                <field name="locality">
+                    <xsl:value-of select="/n:eac-cpf/n:cpfDescription/n:description/n:biogHist/n:chronList/n:chronItem/n:event" />
                 </field>
             </doc>
         </add>

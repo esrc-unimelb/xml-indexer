@@ -29,6 +29,8 @@
                 <field name="repository_link"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='arrepository']/a/@href" /></field>
                 <field name="reference"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='arrepref']" /></field>
                 <field name="date_from"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='ardate']" /></field>
+                <field name="state">Australian Capital Territory</field>
+                <field name="state">ACT</field>
             </doc>
         </add>
     </xsl:template>

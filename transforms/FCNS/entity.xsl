@@ -33,6 +33,8 @@
                 <field name="date_to"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='enddate']" /></field>
                 <xsl:apply-templates select="//dl[@class='content-summary']/dd[@class='function']" />
                 <field name="text"><xsl:value-of select="//div[@class='entry-details-container']"/></field>
+                <field name="state">New South Wales</field>
+                <field name="state">NSW</field>
             </doc>
         </add>
     </xsl:template>

@@ -21,13 +21,16 @@
         <add>
             <doc>
                 <field name="id"><xsl:value-of select="//meta[@name='DC.Identifier']/@content" /></field>
+                <field name="type">Archival Resource</field>
                 <field name="creator"><xsl:value-of select="//meta[@name='DC.Creator']/@content" /></field>
-                <field name="type">Text</field>
                 <field name="name"><xsl:value-of select="//meta[@name='DC.Title']/@content" /></field>
                 <field name="name"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='title']" /></field>
-                <field name="text"><xsl:value-of select="//body" /></field>
-                <field name="state">Australian Capital Territory</field>
-                <field name="state">ACT</field>
+                <field name="repository"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='arrepository']" /></field>
+                <field name="repository_link"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='arrepository']/a/@href" /></field>
+                <field name="reference"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='arrepref']" /></field>
+                <field name="date_from"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='ardate']" /></field>
+                <field name="state">Queensland</field>
+                <field name="state">QLD</field>
             </doc>
         </add>
     </xsl:template>
