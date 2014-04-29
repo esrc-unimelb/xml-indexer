@@ -20,7 +20,13 @@ class Poster:
         log.info('Poster initialised')
         
     def run(self):
+
         idx = Index(self.solr_service, self.site)
+
+        # wipe this data from the index before rebuilding it
+        idx.clean()
+        idx.commit()
+
         for (dirpath, dirnames, filenames) in os.walk(self.input_folder):
             for f in filenames:
                 file_handle = os.path.join(dirpath, f)
