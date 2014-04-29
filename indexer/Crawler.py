@@ -1,5 +1,6 @@
 
 import os
+import os.path
 import re
 import logging
 import magic
@@ -9,11 +10,14 @@ log = logging.getLogger('CRAWLER')
 
 class Crawler:
 
-    def __init__(self, input_folder, excludes, source):
+    def __init__(self, input_folder, exclude_paths, excludes, source):
         # what to index
         self.input_folder = input_folder
 
-        # what to exclude
+        # paths to exclude
+        self.exclude_paths = [ os.path.join(self.input_folder, p.strip()) for p in exclude_paths.split(',') ] if exclude_paths is not None else None
+
+        # files to exclude
         #self.excludes = excludes.split(',')
         self.excludes = [ re.compile(e.strip()) for e in excludes.split(',') ] if excludes is not None else None
 
@@ -29,6 +33,16 @@ class Crawler:
         #  available content => self.input_folder
         files_list = []
         for (dirpath, dirnames, filenames) in os.walk(self.input_folder):
+            ditch_path = False
+            for d in self.exclude_paths:
+                if re.match(d, dirpath):
+                    log.debug("Excluding: %s" % dirpath)
+                    ditch_path = True 
+
+            if ditch_path:
+                continue
+
+            log.debug("Scanning: %s for content" % dirpath)
             for f in filenames:
                 file_handle = os.path.join(dirpath, f)
 

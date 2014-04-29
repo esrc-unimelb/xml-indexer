@@ -38,8 +38,10 @@ class Indexer:
 
         input_folder = self.config_get(self.cfg, 'crawl', 'input')
         excludes = self.config_get(self.cfg, 'crawl', 'excludes')
+        exclude_paths = self.config_get(self.cfg, 'crawl', 'exclude_paths')
         source = self.config_get(self.cfg, 'crawl', 'source').split(',')
         log.debug("Input folder for crawl: %s" % input_folder)
+        log.debug("Excluded paths list: %s" % exclude_paths)
         log.debug("Excludes list: %s" % excludes)
         log.debug("Map to source: %s" % source)
 
@@ -48,7 +50,7 @@ class Indexer:
             sys.exit()
 
         with Timer() as t:
-            c = Crawler(input_folder, excludes, source)
+            c = Crawler(input_folder, exclude_paths, excludes, source)
             files_list = c.run()
 
         return files_list
