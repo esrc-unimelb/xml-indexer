@@ -11,10 +11,10 @@ from indexer.Transformer import Transformer
 from indexer.Poster import Poster
 
 class Indexer:
-    def __init__(self, site):
+    def __init__(self, site, config):
         # get the default configuration
         cfg = ConfigParser.SafeConfigParser()
-        cfg.read(args.config)
+        cfg.read(config)
 
         self.site = site
         site_configuration = os.path.join(self.config_get(cfg, 'GENERAL', 'configs'), site)
@@ -101,15 +101,10 @@ if __name__ == "__main__":
     parser.add_argument('--config',   dest='config', required=True, help='The path to the default Indexer configuration.')
     parser.add_argument('--site',     dest='site',   required=True, help='The site to process.')
 
-    parser.add_argument('--post-only', dest='post', action='store_true', default=None,
+    parser.add_argument('--crawl', dest='crawl', action='store_true', default=None,
+        help='Only perform the crawl and transform stages.')
+    parser.add_argument('--post', dest='post', action='store_true', default=None,
         help='Only perform the post stage (includes index clean).')
-
-    parser.add_argument('--transform-document', dest='transform_document', default=False,
-        help='Transform a single document and write the result to STDOUT.')
-    parser.add_argument('--transform-document-type', dest='transform_document_type', choices = ['xml', 'html'], default=None,
-        help='Transform a single document and write the result to STDOUT.')
-    parser.add_argument('--post-document', dest='post_document', default=None,
-        help='Post this document to SOLR.')
 
     parser.add_argument('--info', dest='info', action='store_true', help='Turn on informational messages')
     parser.add_argument('--debug', dest='debug', action='store_true', help='Turn on full debugging (includes --info)')
@@ -142,22 +137,20 @@ if __name__ == "__main__":
     log.debug("Indexing: %s" % args.site)
 
 
-    indexer = Indexer(args.site)
+    indexer = Indexer(args.site, args.config)
 
-    if args.post is False:
+    if args.crawl is not None:
         ### CRAWLER
         content = indexer.crawl()
 
         ### TRANSFORMER
         ### Only do the crawl if the user is not requesting to specifically
         ###  process a single file; this is usually testing
-        if args.transform_document is None:
-            indexer.transform(content)
-        else:
-            indexer.transform(content, document=args.document, doctype=args.document_type)
+        indexer.transform(content)
 
-    ### POSTER
-    indexer.post()
+    if args.post is not None:
+        ### POSTER
+        indexer.post()
 
 
 
