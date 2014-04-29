@@ -130,10 +130,6 @@ if __name__ == "__main__":
         log.error("Does %s exist?" % args.config)
         sys.exit()
 
-    if args.transform_document and not args.transform_document_type:
-        log.error("If you specify a doc to transform via --transform-document, you must also state its type via --transform-document-type")
-        sys.exit()
-
     log.debug("Indexing: %s" % args.site)
 
 
