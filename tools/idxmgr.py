@@ -1,0 +1,80 @@
+#!/usr/bin/env python
+
+# Author: Dr Marco La Rosa <marco@larosa.org.au>
+#
+# Copyright (c) 2013, Deakin University
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without 
+#  modification, are permitted provided that the following conditions are met:
+#
+# - Redistributions of source code must retain the above copyright notice, 
+#    this list of conditions and the following disclaimer.
+# - Redistributions in binary form must reproduce the above copyright notice, 
+#    this list of conditions and the following disclaimer in the documentation 
+#    and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE 
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+#  POSSIBILITY OF SUCH DAMAGE.
+
+import argparse
+import logging
+
+import sys
+sys.path.append('../')
+from indexer.Index import Index
+
+if __name__ == "__main__":
+
+    # read and check the options
+    parser = argparse.ArgumentParser(description='Solr Index manager: clean and optimize::: DANGER!')
+    parser.add_argument('--url', required=True, dest='url', 
+        help='The URL of the Solr server; it will be something like http://{host}:{port}/solr/{core}')
+
+    parser.add_argument('--site', dest='site', default=None,
+        help="Sometimes you just want to remove a single site - use this option. Pass in the value in \
+        prov_site_short and all documents with that field will be purged.")
+
+    parser.add_argument('--clean', dest='clean', action='store_true', help="Wipe the index or a specific site. This is \
+        a DESTRUCTIVE OPERATION - you\'ve been warned")
+
+    parser.add_argument('--optimize', dest='optimize', action='store_true', help="Optimize the index. As this is the trigger \
+        for updating a slave from a master, it is up to you to call it when you\'re confident the master is ready.")
+
+    parser.add_argument('--debug', dest='debug', action='store_true', help='Turn on full debugging (includes --info)')
+    parser.add_argument('--info', dest='info', action='store_true', help='Turn on informational messages')
+    args = parser.parse_args()
+
+   # unless we specify otherwise
+    if args.debug:
+        logging.basicConfig(level=logging.DEBUG)
+
+    if args.info:
+        logging.basicConfig(level=logging.INFO)
+
+    if not (args.debug and args.info):
+        # just give us error messages
+        logging.basicConfig(level=logging.ERROR)
+
+    # wipe the index if requested
+    index = Index(args.url, args.site)
+
+    # has the user specified a wipe operation
+    if args.clean:
+        index.clean()
+        index.commit()
+
+    # or they do just want to trigger an optimize - which then
+    #  triggers an update of the slave
+    if args.optimize:
+        index.optimize()
+
