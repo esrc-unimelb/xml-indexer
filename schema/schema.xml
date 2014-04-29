@@ -120,9 +120,11 @@
     <field name="" type="date" indexed="true" stored="true" multiValued="false" required="false" />
     -->
 
+    <field name="_version_" type="long" indexed="true" stored="true"/>
+
     <!-- Common across document types -->
     <field name="id" type="string" indexed="true" stored="true" required="true" />
-    <field name="type" type="string" indexed="true" stored="true" multiValued="false" required="false" />
+    <field name="type" type="string" indexed="true" stored="true" multiValued="true" required="false" />
     <field name="site_code" type="string" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="creator" type="string" indexed="true" stored="true" multiValued="true" required="false" />
     <field name="name" type="text_en_splitting" indexed="true" stored="true" multiValued="true" required="false" />
@@ -147,6 +149,11 @@
     <field name="editor" type="string" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="imprint" type="string" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="url" type="string" indexed="true" stored="true" multiValued="false" required="false" />
+
+    <!-- findandconnect specific fields -->
+    <field name="state" type="string" indexed="true" stored="true" multiValued="false" required="false" />
+    <field name="locality" type="string" indexed="true" stored="true" multiValued="false" required="false" />
+    <field name="operator" type="string" indexed="true" stored="true" multiValued="false" required="false" />
 
   </fields>
 
@@ -174,11 +181,11 @@
   is added to the index.  It's used either to index the same field differently,
   or to add multiple fields to the same field for easier/faster searching.  -->
 
-  <!-- copy into hints field -->
+  <!-- copy into hints field 
   <copyField source="title" dest="hints" />
   <copyField source="city" dest="hints" />
 
-  <!-- copy data fields into default search field -->
+  copy data fields into default search field
   <copyField source="abstract" dest="text" />
   <copyField source="alternate_title" dest="text" />
   <copyField source="event" dest="text" />  
@@ -187,18 +194,18 @@
   <copyField source="title" dest="text" />
   <copyField source="type" dest="text" />
 
-  <!-- copy location fields into default search field -->
+  copy location fields into default search field 
   <copyField source="street_address" dest="text" />
   <copyField source="city" dest="text" />
   <copyField source="region" dest="text" />
   <copyField source="country" dest="text" />
 
-  <!-- copy inferred fields into default search field -->
+  copy inferred fields into default search field
   <copyField source="inferred_concept" dest="text" />
   <copyField source="inferred_organization" dest="text" />
   <copyField source="inferred_person" dest="text" />
   <copyField source="inferred_city" dest="text" />
-  <copyField source="inferred_region" dest="text" />
+  <copyField source="inferred_region" dest="text" /> -->
 
   <!-- Above, multiple source fields are copied to the [text] field. 
   Another way to map multiple source fields to the same 
