@@ -151,7 +151,7 @@
     <field name="url" type="string" indexed="true" stored="true" multiValued="false" required="false" />
 
     <!-- findandconnect specific fields -->
-    <field name="state" type="string" indexed="true" stored="true" multiValued="false" required="false" />
+    <field name="state" type="string" indexed="true" stored="true" multiValued="true" required="false" />
     <field name="locality" type="string" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="operator" type="string" indexed="true" stored="true" multiValued="false" required="false" />
 
