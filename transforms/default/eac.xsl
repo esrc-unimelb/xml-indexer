@@ -24,7 +24,6 @@
         <add>
             <doc>
                 <field name="id"><xsl:value-of select="/n:eac-cpf/n:cpfDescription/n:identity/n:entityId" /></field>
-                <field name="type">Entity</field>
                 <field name="type"><xsl:value-of select="/n:eac-cpf/n:cpfDescription/n:identity/n:entityType" /></field>
                 <field name="creator"><xsl:value-of select="/nothere"/></field>
                 <field name="name"><xsl:value-of select="/n:eac-cpf/n:cpfDescription/n:identity/n:nameEntry/n:part" /></field>
