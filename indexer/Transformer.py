@@ -27,7 +27,7 @@ class Transformer:
         self.transforms = transforms
 
         # the names of the fields which could have a date
-        self.date_fields = [ 'start_date', 'end_date' ]
+        self.date_fields = [ 'date_from', 'date_to' ]
 
         # the names of the fields which could have markup
         self.markup_fields = [ 'text' ]
