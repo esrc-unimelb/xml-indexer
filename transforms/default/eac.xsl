@@ -30,6 +30,7 @@
                 <field name="date_from"><xsl:value-of select="/n:eac-cpf/n:cpfDescription/n:description/n:existDates/n:dateRange/n:fromDate/@standardDate" /></field>
                 <field name="date_to"><xsl:value-of select="/n:eac-cpf/n:cpfDescription/n:description/n:existDates/n:dateRange/n:toDate/@standardDate" /></field>
                 <xsl:apply-templates select="/n:eac-cpf/n:cpfDescription/n:description/n:functions/n:function/n:term" />
+                <field name="abstract"><xsl:value-of select="/n:eac-cpf/n:cpfDescription/n:description/n:biogHist/n:abstract" /></field>
                 <field name="text">
                     <xsl:value-of select="/n:eac-cpf/n:cpfDescription/n:description/n:biogHist/n:abstract" />
                     <xsl:apply-templates select="/n:eac-cpf/n:cpfDescription/n:description/n:biogHist/n:p" />

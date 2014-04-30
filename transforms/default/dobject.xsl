@@ -27,7 +27,7 @@
                 <field name="id"><xsl:value-of select="//meta[@name='DC.Identifier']/@content" /></field>
                 <field name="type">Digital Object</field>
                 <field name="creator"><xsl:value-of select="//meta[@name='DC.Creator']/@content" /></field>
-                <field name="name"><xsl:value-of select="//meta[@name='DC.Title']/@content" /></field>
+                <!--<field name="name"><xsl:value-of select="//meta[@name='DC.Title']/@content" /></field>-->
                 <field name="name"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='title']" /></field>
                 <field name="source"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='doreference']" /></field>
                 <field name="source_link"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='doexternalurl']/a/@href" /></field>

@@ -23,7 +23,7 @@
                 <field name="id"><xsl:value-of select="//meta[@name='DC.Identifier']/@content" /></field>
                 <field name="type">Publication</field>
                 <field name="creator"><xsl:value-of select="//meta[@name='DC.Creator']/@content" /></field>
-                <field name="name"><xsl:value-of select="//meta[@name='DC.Title']/@content" /></field>
+                <!-- <field name="name"><xsl:value-of select="//meta[@name='DC.Title']/@content" /></field> -->
                 <field name="name"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='title']" /></field>
                 <field name="name"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='secondarytitle']" /></field>
                 <field name="author"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='author']" /></field>
