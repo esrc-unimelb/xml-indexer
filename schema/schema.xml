@@ -132,6 +132,7 @@
         termVectors="true" termPositions="true" termOffsets="true" />
     <field name="text" type="text_en_splitting" indexed="true" stored="true" multiValued="true" required="false" 
         termVectors="true" termPositions="true" termOffsets="true" />
+    <field name="abstract" type="text_en_splitting" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="date_from" type="date" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="date_to" type="date" indexed="true" stored="true" multiValued="false" required="false" />
 

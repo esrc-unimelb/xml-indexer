@@ -823,14 +823,11 @@
        <str name="wt">json</str>
        <str name="fl">*,score</str>
 
+       <str name="mlt">on</str>
+       <str name="mlt.count">3</str>
        <str name="mlt.qf">name^10 text</str>
        <str name="mlt.fl">name,text</str>
        <int name="mlt.count">3</int>
-
-       <!-- Highlighting defaults -->
-       <str name="hl">on</str>
-       <str name="hl.fl">name text</str>
-       <str name="hl.encoder">html</str>
 
        <!-- Spell checking defaults -->
        <str name="spellcheck.dictionary">default</str>
