@@ -825,8 +825,8 @@
 
        <str name="mlt">on</str>
        <str name="mlt.count">3</str>
-       <str name="mlt.qf">name^10 text</str>
-       <str name="mlt.fl">name,text</str>
+       <str name="mlt.qf">name^10 text repository author editor source rights</str>
+       <str name="mlt.fl">name,text,repository,author,editor,source,rights</str>
        <int name="mlt.count">3</int>
 
        <!-- Spell checking defaults -->
