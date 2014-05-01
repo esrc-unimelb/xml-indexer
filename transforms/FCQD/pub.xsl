@@ -30,8 +30,8 @@
                 <field name="editor"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='secondaryauthor']" /></field>
                 <field name="imprint"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='imprint']" /></field>
                 <field name="url"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='url']" /></field>
-                <field name="state">Queensland</field>
-                <field name="state">QLD</field>
+                <field name="state_long">Queensland</field>
+                <field name="state_short">QLD</field>
             </doc>
         </add>
     </xsl:template>

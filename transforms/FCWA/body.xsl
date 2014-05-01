@@ -26,8 +26,8 @@
                 <field name="name"><xsl:value-of select="//meta[@name='DC.Title']/@content" /></field>
                 <field name="name"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='title']" /></field>
                 <field name="text"><xsl:value-of select="//body" /></field>
-                <field name="state">Western Australia</field>
-                <field name="state">WA</field>
+                <field name="state_long">Western Australia</field>
+                <field name="state_short">WA</field>
             </doc>
         </add>
     </xsl:template>

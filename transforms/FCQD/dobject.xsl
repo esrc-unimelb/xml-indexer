@@ -34,8 +34,8 @@
                 <field name="rights"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='dorights']" /></field>
                 <field name="thumbnail"><xsl:call-template name="thumbnail" /></field>
                 <!--<field name="large"><xsl:call-template name="large_image" /></field>-->
-                <field name="state">Queensland</field>
-                <field name="state">QLD</field>
+                <field name="state_long">Queensland</field>
+                <field name="state_short">QLD</field>
             </doc>
         </add>
     </xsl:template>
