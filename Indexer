@@ -122,7 +122,7 @@ if __name__ == "__main__":
 
     if not (args.debug and args.info):
         # just give us error messages
-        logging.basicConfig(level=logging.ERROR)
+        logging.basicConfig(level=logging.WARN)
 
     # get the logger
     log = logging.getLogger('INDEXER')
