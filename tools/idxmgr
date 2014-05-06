@@ -28,6 +28,7 @@
 
 import argparse
 import logging
+import os.path
 
 import sys
 sys.path.append('../')
@@ -37,10 +38,10 @@ if __name__ == "__main__":
 
     # read and check the options
     parser = argparse.ArgumentParser(description='Solr Index manager: clean and optimize::: DANGER!')
-    parser.add_argument('--url', required=True, dest='url', 
+    parser.add_argument('--url', dest='url', default='http://localhost:8080/solr',
         help='The URL of the Solr server; it will be something like http://{host}:{port}/solr/{core}')
 
-    parser.add_argument('--site', dest='site', default=None,
+    parser.add_argument('--site', dest='site', default=None, required=True,
         help="Sometimes you just want to remove a single site - use this option. Pass in the value in \
         prov_site_short and all documents with that field will be purged.")
 
@@ -66,7 +67,7 @@ if __name__ == "__main__":
         logging.basicConfig(level=logging.ERROR)
 
     # wipe the index if requested
-    index = Index(args.url, args.site)
+    index = Index(os.path.join(args.url,args.site), args.site)
 
     # has the user specified a wipe operation
     if args.clean:
