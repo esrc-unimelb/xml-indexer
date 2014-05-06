@@ -138,6 +138,7 @@ class Transformer:
 
             else:
                 # it's some other kind of html document so just slurp the body
+                log.debug("Uh oh - using body transform as the type couldn't be determined more specifically.")
                 t = 'body.xsl'
 
         else:
@@ -147,11 +148,6 @@ class Transformer:
             transform = os.path.join(transform_path, t)
             if os.path.exists(transform):
                 return transform
-
-        # if we get to here - we didn't find a specific transform
-        #  so just use the body transform
-        for transform_path in self.transforms:
-            return os.path.join(transform_path, 'body.xsl')
 
     def _clean_dates(self, doc):
         """Date data needs to be in Solr date format
