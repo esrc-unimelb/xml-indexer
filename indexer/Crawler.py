@@ -61,9 +61,12 @@ class Crawler:
                     continue
 
                 # ditch it if it's not a HTML file
-                filetype = magic.from_file(file_handle)
-                if not re.search('HTML', filetype):
-                    continue
+                try:
+                    filetype = magic.from_file(file_handle)
+                    if not re.search('HTML', filetype):
+                        continue
+                except:
+                    log.error("What the hell sort of file is this Helen?: %s" % file_handle)
 
                 # read the file - look for a DC.Identifier tag
                 tree = html.parse(file_handle)
@@ -81,14 +84,18 @@ class Crawler:
                     # we need to confirm that we can get the XML (ie that
                     #  the URL is correct) otherwise just use the HTML file
                     source = data[0].attrib['content']
-                    source = source.replace(self.source[0].strip(), self.source[1].strip())
-                    if os.path.exists(source):
-                        log.debug("Using the XML content for: %s" % file_handle)
-                        files_list.append((source, 'xml'))
+                    if len(self.source) == 2:
+                        source = source.replace(self.source[0].strip(), self.source[1].strip())
+                        if os.path.exists(source):
+                            log.debug("Using the XML content for: %s" % file_handle)
+                            files_list.append((source, 'xml'))
+                        else:
+                            log.warn("Found XML datafile for %s but couldn't retrieve it" % file_handle)
+                            log.debug("Using the HTML content for: %s" % file_handle)
+                            files_list.append((file_handle, 'html'))
                     else:
-                        log.warn("Found XML datafile for %s but couldn't retrieve it" % file_handle)
-                        log.debug("Using the HTML content for: %s" % file_handle)
-                        files_list.append((file_handle, 'html'))
+                        log.error("Trying to handle %s but don't know how to map it." % file_handle)
+                        log.error("Define map_url and possibly map_path in the indexing config to transpose the URL to the filesystem location.")
 
                 else:
                     log.debug("Using the HTML content for: %s" % file_handle)

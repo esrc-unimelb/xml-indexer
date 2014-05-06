@@ -55,6 +55,9 @@ class Transformer:
             except IOError:
                 log.error("Couldn't load %s. Skipping it.." % doc[0])
                 return
+            except etree.XMLSyntaxError:
+                log.error("Bad data file: %s. Skipping it.." % doc[0])
+                return
         else:
             try:
                 tree = html.parse(doc[0])
@@ -113,11 +116,14 @@ class Transformer:
             log.error("Couldn't get unique id for %s so I can't save it" % doc[0])
             return
 
-        uniqueid = uniqueid[0].text.split('://')[1]
-        output_file = os.path.join(self.output_folder, uniqueid.replace('/', '-'))
-        log.debug("Writing output to: %s" % output_file)
-        with open(output_file, 'w') as f:
-            f.write(etree.tostring(d, pretty_print=True))
+        try:
+            uniqueid = uniqueid[0].text.split('://')[1]
+            output_file = os.path.join(self.output_folder, uniqueid.replace('/', '-'))
+            log.debug("Writing output to: %s" % output_file)
+            with open(output_file, 'w') as f:
+                f.write(etree.tostring(d, pretty_print=True))
+        except:
+            log.error("Couldn't save the output from: %s" % doc[0]) 
 
     def _get_transform(self, tree):
         # we're we given an XML tree or a HTML tree
