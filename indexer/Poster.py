@@ -1,7 +1,6 @@
 
 import logging
 import os
-import os.path
 from Index import Index
 from lxml import etree
 log = logging.getLogger('POSTER')
@@ -13,7 +12,7 @@ class Poster:
         self.input_folder = input_folder
 
         # where to send it
-        self.solr_service = os.path.join(solr_service, site)
+        self.solr_service = solr_service
 
         # the site we're indexing
         self.site = site
