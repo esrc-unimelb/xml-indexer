@@ -1,6 +1,7 @@
 
 import logging
 import os
+import os.path
 from Index import Index
 from lxml import etree
 log = logging.getLogger('POSTER')
@@ -12,7 +13,7 @@ class Poster:
         self.input_folder = input_folder
 
         # where to send it
-        self.solr_service = solr_service
+        self.solr_service = os.path.join(solr_service, site)
 
         # the site we're indexing
         self.site = site
@@ -21,9 +22,9 @@ class Poster:
         
     def run(self):
 
-        idx = Index(self.solr_service, self.site)
+        idx = Index(self.solr_service, self.site, "site_code:%s" % self.site)
 
-        # wipe this data from the index before rebuilding it
+        # wipe the old data from the index before rebuilding it
         idx.clean()
         idx.commit()
 
