@@ -45,6 +45,9 @@ if __name__ == "__main__":
         help="Sometimes you just want to remove a single site - use this option. Pass in the value in \
         prov_site_short and all documents with that field will be purged.")
 
+    parser.add_argument('--match', dest='match', default=None, 
+        help="Pass in a query to match documents to removes. e.g. site_code:FCVC")
+
     parser.add_argument('--clean', dest='clean', action='store_true', help="Wipe the index or a specific site. This is \
         a DESTRUCTIVE OPERATION - you\'ve been warned")
 
@@ -67,7 +70,7 @@ if __name__ == "__main__":
         logging.basicConfig(level=logging.ERROR)
 
     # wipe the index if requested
-    index = Index(os.path.join(args.url,args.site), args.site)
+    index = Index(os.path.join(args.url,args.site), args.site, args.match)
 
     # has the user specified a wipe operation
     if args.clean:

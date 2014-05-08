@@ -149,7 +149,4 @@ if __name__ == "__main__":
     if args.post is not None:
         ### POSTER
         indexer.post()
-
-
-
-
+    

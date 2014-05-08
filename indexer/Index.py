@@ -34,9 +34,10 @@ requests_log.setLevel(logging.ERROR)
 
 class Index:
     """All the required to manage submission to Solr"""
-    def __init__(self, update_url, site):
+    def __init__(self, update_url, site, match):
         self.update_url = "%s/%s" % (update_url, 'update?')
         self.site = site
+        self.match = match
         self.headers = { 'Content-type': 'text/xml; charset=utf-8' }
 
     def commit(self):
@@ -55,8 +56,8 @@ class Index:
 
         If a site is specified, then only the documents of that site will be purged.
         """
-        if self.site is not None:
-            msg = "<delete><query>site_code:%s</query></delete>" % self.site
+        if self.match is not None:
+            msg = "<delete><query>%s</query></delete>" % self.match
         else:
             msg = "<delete><query>*:*</query></delete>"
         resp = requests.post(self.update_url, msg, headers=self.headers)
