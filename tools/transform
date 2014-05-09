@@ -6,6 +6,7 @@ import argparse
 import logging
 import ConfigParser
 import os.path
+from lxml import html, etree
 from indexer.Transformer import Transformer
 
 class Transform:
@@ -38,7 +39,7 @@ class Transform:
         else:
             return None
 
-    def transform(self, content, document=None, doctype=None):
+    def transform(self, content, document=None):
         ### TRANSFORM THE CONTENT MARKED FOR INGESTION INTO SOLR
         output_folder = os.path.join(self.site_cache, 'post')
         transforms = self.config_get(self.cfg, 'transform', 'transforms')
@@ -50,9 +51,29 @@ class Transform:
 
         log.debug("Output folder for transforms: %s" % output_folder)
         log.debug("Transform search path: %s" % transforms)
-
         t = Transformer(content, self.site, output_folder, transforms)
-        t.process_document((document, doctype), debug=True)
+
+        # read the file - look for a DC.Identifier tag
+        tree = html.parse(document)
+
+        # figure out if it's an EAC record or anything else
+        #  if it's an EAC we'll cache the XML data file
+        #  everything else: we use the html
+        data = tree.xpath('//meta[@name="EAC"]')
+        if data:
+            source = data[0].attrib['content']
+            s = self.config_get(self.cfg, 'crawl', 'source').split(',')
+            if len(s) == 2:
+                source = source.replace(s[0].strip(), s[1].strip())
+                log.debug("XML source referenced: %s" % source)
+                if os.path.exists(source):
+                    log.debug("Using the XML source: %s" % source)
+                    t.process_document((source, 'xml'), debug=True)
+                else:
+                    log.debug("Using the HTML source: %s" % document)
+                    t.process_document((document, 'html'), debug=True)
+
+
 
 
 if __name__ == "__main__":
@@ -64,9 +85,8 @@ if __name__ == "__main__":
     parser.add_argument('--site',     dest='site',   required=True, help='The site to process.')
 
     parser.add_argument('--doc', dest='transform_document', required=True,
-        help='Transform a single document and write the result to STDOUT.')
-    parser.add_argument('--type', dest='transform_document_type', choices = ['xml', 'html'], required=True,
-        help='Transform a single document and write the result to STDOUT.')
+        help="Transform a single document and write the result to STDOUT. ONLY USE THE HTML DOCUMENT.\
+        If there's an XML representation the code will find it.")
 
     args = parser.parse_args()
 
@@ -82,7 +102,7 @@ if __name__ == "__main__":
     log.debug("Indexing: %s" % args.site)
 
     t = Transform(args.site, args.config)
-    t.transform([], document=args.transform_document, doctype=args.transform_document_type)
+    t.transform([], document=args.transform_document)
 
 
 
