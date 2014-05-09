@@ -37,14 +37,16 @@
                 </field>
                 <field name="state_long">New South Wales</field>
                 <field name="state_short">NSW</field>
-                <field name="locality">
-                    <xsl:value-of select="/n:eac-cpf/n:cpfDescription/n:description/n:biogHist/n:chronList/n:chronItem/n:event" />
-                </field>
+                <xsl:apply-templates select="/n:eac-cpf/n:cpfDescription/n:description/n:biogHist/n:chronList/n:chronItem/n:event" />
             </doc>
         </add>
     </xsl:template>
     <xsl:template match="/n:eac-cpf/n:cpfDescription/n:description/n:functions/n:function/n:term">
         <field name="function"><xsl:value-of select="." /></field>
+    </xsl:template>
+
+    <xsl:template match="/n:eac-cpf/n:cpfDescription/n:description/n:biogHist/n:chronList/n:chronItem/n:event">
+        <field name="locality"><xsl:value-of select="." /></field>
     </xsl:template>
 
     <xsl:template name="name">
