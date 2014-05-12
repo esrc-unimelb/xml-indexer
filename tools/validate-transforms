@@ -1,0 +1,42 @@
+#!/usr/local/scholarly-python2/bin/python
+
+import sys
+sys.path.append('../')
+import argparse
+import logging
+import ConfigParser
+import os.path
+import os
+from lxml import html, etree
+
+
+if __name__ == "__main__":
+
+    # read and check the options
+    parser = argparse.ArgumentParser(description='eSRC Transform validation tool - can the transforms be loaded?')
+
+    parser.add_argument('--path',   dest='path', required=True, help='The path to the transforms. This gets walked and files ending in \
+    .xsl will be loaded.')
+
+    args = parser.parse_args()
+
+    # get the logger
+    logging.basicConfig(level=logging.DEBUG)
+    log = logging.getLogger('VALIDATE')
+
+    # check the arguments
+    if not os.path.exists(args.path):
+        log.error("Does %s exist?" % args.path)
+        sys.exit()
+
+    for (dirpath, dirnames, filenames) in os.walk(args.path):
+        files = [ os.path.join(dirpath, f) for f in filenames ] 
+        for f in files:
+            try:
+                etree.parse(f)
+                log.debug("%s parsed successfully" % f)
+            except:
+                print sys.exc_info()
+
+
+
