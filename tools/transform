@@ -7,71 +7,10 @@ import logging
 import ConfigParser
 import os.path
 from lxml import html, etree
-from indexer.Transformer import Transformer
+from indexer.Indexer import Indexer
+from indexer.Crawler import Crawler
 
-class Transform:
 
-    def __init__(self, site, config):
-        # get the default configuration
-        cfg = ConfigParser.SafeConfigParser()
-        cfg.read(config)
-
-        self.site = site
-        site_configuration = os.path.join(self.config_get(cfg, 'GENERAL', 'configs'), site)
-        self.site_cache = os.path.join(self.config_get(cfg, 'GENERAL', 'cache_path'), site)
-        self.default_transforms = self.config_get(cfg, 'GENERAL', 'transforms')
-        log.debug("Configuration: %s" % site_configuration)
-        log.debug("Cache path: %s" % self.site_cache)
-
-        # then try to load the site specific config
-        if not os.path.exists(site_configuration):
-            log.error("Can't access %s" % site_configuration)
-            sys.exit()
-
-        # read in the site specific configuration and kick off the run
-        cfg.read(site_configuration)
-        self.cfg = cfg
-
-    def config_get(self, cfg, section, param):
-
-        if cfg.has_section(section) and cfg.has_option(section, param):
-            return cfg.get(section, param)
-        else:
-            return None
-
-    def transform(self, content, document=None):
-        ### TRANSFORM THE CONTENT MARKED FOR INGESTION INTO SOLR
-        output_folder = os.path.join(self.site_cache, 'post')
-        transforms = self.config_get(self.cfg, 'transform', 'transforms')
-
-        if not transforms:
-            transforms = self.default_transforms
-        else:
-            transforms = [ transforms, self.default_transforms ]
-
-        log.debug("Output folder for transforms: %s" % output_folder)
-        log.debug("Transform search path: %s" % transforms)
-        t = Transformer(content, self.site, output_folder, transforms)
-
-        # read the file - look for a DC.Identifier tag
-        tree = html.parse(document)
-
-        # figure out if it's an EAC record or anything else
-        #  if it's an EAC we'll cache the XML data file
-        #  everything else: we use the html
-        data = tree.xpath('//meta[@name="EAC"]')
-        if data:
-            source = data[0].attrib['content']
-            s = self.config_get(self.cfg, 'crawl', 'source').split(',')
-            if len(s) == 2:
-                source = source.replace(s[0].strip(), s[1].strip())
-                log.debug("XML source referenced: %s" % source)
-                if os.path.exists(source):
-                    log.debug("Using the XML source: %s" % source)
-                    t.process_document((source, 'xml'), debug=True)
-                else:
-                    log.debug("Using the HTML source: %s" % document)
-                    t.process_document((document, 'html'), debug=True)
 
 
 
@@ -84,7 +23,7 @@ if __name__ == "__main__":
     parser.add_argument('--config',   dest='config', required=True, help='The path to the default Indexer configuration.')
     parser.add_argument('--site',     dest='site',   required=True, help='The site to process.')
 
-    parser.add_argument('--doc', dest='transform_document', required=True,
+    parser.add_argument('--doc', dest='document', required=True,
         help="Transform a single document and write the result to STDOUT. ONLY USE THE HTML DOCUMENT.\
         If there's an XML representation the code will find it.")
 
@@ -101,9 +40,11 @@ if __name__ == "__main__":
 
     log.debug("Indexing: %s" % args.site)
 
-    t = Transform(args.site, args.config)
-    t.transform([], document=args.transform_document)
-
+    i = Indexer(args.site, args.config)
+    c = Crawler(i.cfg)
+    tree = html.parse(args.document)
+    document = c.which_file(tree, args.document)
+    i.transform([], document=document[0], doctype=document[1])
 
 
 

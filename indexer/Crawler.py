@@ -1,5 +1,6 @@
 
 import os
+import sys
 import os.path
 import re
 import logging
@@ -10,7 +11,21 @@ log = logging.getLogger('CRAWLER')
 
 class Crawler:
 
-    def __init__(self, input_folder, exclude_paths, excludes, source):
+    def __init__(self, cfg):
+
+        input_folder = cfg.get('crawl', 'input') if (cfg.has_section('crawl') and cfg.has_option('crawl', 'input')) else None
+        excludes = cfg.get('crawl', 'excludes') if (cfg.has_section('crawl') and cfg.has_option('crawl', 'excludes')) else None
+        exclude_paths = cfg.get('crawl', 'exclude_paths') if (cfg.has_section('crawl') and cfg.has_option('crawl', 'exclude_paths')) else None
+        source = cfg.get('crawl', 'source').split(',') if (cfg.has_section('crawl') and cfg.has_option('crawl', 'source')) else None
+        log.debug("Input folder for crawl: %s" % input_folder)
+        log.debug("Excluded paths list: %s" % exclude_paths)
+        log.debug("Excludes list: %s" % excludes)
+        log.debug("Map to source: %s" % source)
+
+        if input_folder is None:
+            log.error("I think input folder is missing from the config: %s" % site_configuration)
+            sys.exit()
+
         # what to index
         self.input_folder = input_folder
 
@@ -76,31 +91,39 @@ class Crawler:
                 if not identifier:
                     continue
 
-                # figure out if it's an EAC record or anything else
-                #  if it's an EAC we'll cache the XML data file
-                #  everything else: we use the html
-                data = tree.xpath('//meta[@name="EAC"]')
-                if data:
-                    # we need to confirm that we can get the XML (ie that
-                    #  the URL is correct) otherwise just use the HTML file
-                    source = data[0].attrib['content']
-                    if len(self.source) == 2:
-                        source = source.replace(self.source[0].strip(), self.source[1].strip())
-                        if os.path.exists(source):
-                            log.debug("Using the XML content for: %s" % file_handle)
-                            files_list.append((source, 'xml'))
-                        else:
-                            log.warn("Found XML datafile for %s but couldn't retrieve it" % file_handle)
-                            log.debug("Using the HTML content for: %s" % file_handle)
-                            files_list.append((file_handle, 'html'))
-                    else:
-                        log.error("Trying to handle %s but don't know how to map it." % file_handle)
-                        log.error("Define map_url and possibly map_path in the indexing config to transpose the URL to the filesystem location.")
-
-                else:
-                    log.debug("Using the HTML content for: %s" % file_handle)
-                    files_list.append((file_handle, 'html'))
-        
+                files_list.append(self.which_file(tree, file_handle))
 
         # this is the list of files to be transformed and submitted to SOLR
         return files_list
+
+    def which_file(self, tree, file_handle):
+
+        # figure out if it's an EAC record or anything else
+        #  if it's an EAC we'll cache the XML data file
+        #  everything else: we use the html
+        data = tree.xpath('//meta[@name="EAC"]')
+        if data:
+            # we need to confirm that we can get the XML (ie that
+            #  the URL is correct) otherwise just use the HTML file
+            source = data[0].attrib['content']
+            if len(self.source) == 2:
+                source = source.replace(self.source[0].strip(), self.source[1].strip())
+                if os.path.exists(source):
+                    log.debug("Using the XML content for: %s" % file_handle)
+                    return (source, 'xml')
+                    #files_list.append((source, 'xml'))
+                else:
+                    log.warn("Found XML datafile for %s but couldn't retrieve it" % file_handle)
+                    log.debug("Using the HTML content for: %s" % file_handle)
+                    return (file_handle, 'html')
+                    #files_list.append((file_handle, 'html'))
+            else:
+                log.error("Trying to handle %s but don't know how to map it." % file_handle)
+                log.error("Define map_url and possibly map_path in the indexing config to transpose the URL to the filesystem location.")
+
+        else:
+            log.debug("Using the HTML content for: %s" % file_handle)
+            return (file_handle, 'html')
+            #files_list.append((file_handle, 'html'))
+    
+
