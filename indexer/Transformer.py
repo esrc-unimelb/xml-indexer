@@ -2,6 +2,7 @@
 import sys
 import logging
 import os.path
+import shutil
 from lxml import etree, html
 from clean.empty import elements
 from clean.date import date_cleanser
@@ -37,6 +38,12 @@ class Transformer:
     def run(self):
         log.info("Transforing the content found")
         """Process each document in the input files_list"""
+
+        # wipe the output folder
+        shutil.rmtree(self.output_folder)
+        if not os.path.isdir(self.output_folder):
+            os.makedirs(self.output_folder)
+
         for f in self.files_list:
             self.process_document(f)
 

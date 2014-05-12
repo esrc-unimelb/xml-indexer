@@ -111,12 +111,10 @@ class Crawler:
                 if os.path.exists(source):
                     log.debug("Using the XML content for: %s" % file_handle)
                     return (source, 'xml')
-                    #files_list.append((source, 'xml'))
                 else:
                     log.warn("Found XML datafile for %s but couldn't retrieve it" % file_handle)
                     log.debug("Using the HTML content for: %s" % file_handle)
                     return (file_handle, 'html')
-                    #files_list.append((file_handle, 'html'))
             else:
                 log.error("Trying to handle %s but don't know how to map it." % file_handle)
                 log.error("Define map_url and possibly map_path in the indexing config to transpose the URL to the filesystem location.")
@@ -124,6 +122,4 @@ class Crawler:
         else:
             log.debug("Using the HTML content for: %s" % file_handle)
             return (file_handle, 'html')
-            #files_list.append((file_handle, 'html'))
-    
 
