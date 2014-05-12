@@ -20,6 +20,9 @@
     xmlns:str="http://exslt.org/strings"
     extension-element-prefixes="str"
     version="1.0">
+
+    <xsl:import href="../lib/common.xsl" />
+
     <xsl:output method="text" indent="yes" encoding="UTF-8" omit-xml-declaration="yes" />
     <xsl:template match="/">
         <add>
@@ -38,20 +41,5 @@
                 <field name="state_short">TAS</field>
             </doc>
         </add>
-    </xsl:template>
-    <xsl:template name="thumbnail">
-        <xsl:variable name="docpath" select="str:split(//meta[@name='DC.Identifier']/@content, '/objects')" />
-        <xsl:variable name="thumbpath" select="str:split(//img[@id='dothumb']/@src, '../objects')" />
-        <xsl:value-of select="$docpath" />
-        <xsl:text>/objects</xsl:text>
-        <xsl:value-of select="$thumbpath" />
-    </xsl:template>
-    <xsl:template name="large_image">
-        <xsl:variable name="docpath" select="str:split(//meta[@name='DC.Identifier']/@content, '/objects')" />
-        <xsl:variable name="im" select="str:split(//div[@class='entity-image']/a/@href, '../image_viewer.htm?objects')" />
-        <xsl:variable name="largepath" select="str:split($im, ',')" />
-        <xsl:value-of select="$docpath" />
-        <xsl:text>/objects</xsl:text>
-        <xsl:value-of select="$largepath" />
     </xsl:template>
 </xsl:stylesheet>
