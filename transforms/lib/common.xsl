@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+    xmlns:n="urn:isbn:1-931666-33-4"
     xmlns:str="http://exslt.org/strings"
     extension-element-prefixes="str"
     version="1.0">
