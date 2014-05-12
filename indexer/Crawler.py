@@ -112,7 +112,7 @@ class Crawler:
                     log.debug("Using the XML content for: %s" % file_handle)
                     return (source, 'xml')
                 else:
-                    log.warn("Found XML datafile for %s but couldn't retrieve it" % file_handle)
+                    log.warn("XML datafile referenced in %s but I couldn't retrieve it." % file_handle)
                     log.debug("Using the HTML content for: %s" % file_handle)
                     return (file_handle, 'html')
             else:
