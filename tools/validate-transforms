@@ -21,7 +21,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # get the logger
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.ERROR)
     log = logging.getLogger('VALIDATE')
 
     # check the arguments
@@ -33,9 +33,13 @@ if __name__ == "__main__":
         files = [ os.path.join(dirpath, f) for f in filenames ] 
         for f in files:
             try:
-                etree.parse(f)
-                log.debug("%s parsed successfully" % f)
-            except:
+                xsl = etree.parse(f)
+                xsl.xinclude()
+                xsl = etree.XSLT(xsl)
+
+                log.info("%s parsed successfully" % f)
+            except etree.XSLTParseError:
+                log.error("Couldn't parse %s as an XSLT stylesheet" % f)
                 print sys.exc_info()
 
 
