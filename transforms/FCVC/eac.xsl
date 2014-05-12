@@ -35,7 +35,7 @@
                     <xsl:value-of select="/n:eac-cpf/n:cpfDescription/n:description/n:biogHist/n:abstract" />
                     <xsl:apply-templates select="/n:eac-cpf/n:cpfDescription/n:description/n:biogHist/n:p" />
                 </field>
-                <field name="state_long">VICTORIA</field>
+                <field name="state_long">Victoria</field>
                 <field name="state_short">VIC</field>
                 <xsl:apply-templates select="/n:eac-cpf/n:cpfDescription/n:description/n:biogHist/n:chronList/n:chronItem/n:event" />
             </doc>
