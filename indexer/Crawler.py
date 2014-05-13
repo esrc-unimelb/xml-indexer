@@ -14,12 +14,14 @@ class Crawler:
     def __init__(self, cfg):
 
         input_folder = cfg.get('crawl', 'input') if (cfg.has_section('crawl') and cfg.has_option('crawl', 'input')) else None
-        excludes = cfg.get('crawl', 'excludes') if (cfg.has_section('crawl') and cfg.has_option('crawl', 'excludes')) else None
+        exclude_types = cfg.get('crawl', 'exclude_types') if (cfg.has_section('crawl') and cfg.has_option('crawl', 'exclude_types')) else None
+        exclude_files = cfg.get('crawl', 'exclude_files') if (cfg.has_section('crawl') and cfg.has_option('crawl', 'exclude_files')) else None
         exclude_paths = cfg.get('crawl', 'exclude_paths') if (cfg.has_section('crawl') and cfg.has_option('crawl', 'exclude_paths')) else None
         source = cfg.get('crawl', 'source').split(',') if (cfg.has_section('crawl') and cfg.has_option('crawl', 'source')) else None
         log.debug("Input folder for crawl: %s" % input_folder)
+        log.debug("Excluded types list: %s" % exclude_types)
         log.debug("Excluded paths list: %s" % exclude_paths)
-        log.debug("Excludes list: %s" % excludes)
+        log.debug("Excluded files list: %s" % exclude_files)
         log.debug("Map to source: %s" % source)
 
         if input_folder is None:
@@ -29,12 +31,15 @@ class Crawler:
         # what to index
         self.input_folder = input_folder
 
+        # types to exclude
+        self.exclude_types = [ p.strip() for p in exclude_types.split(',') ] if exclude_types is not None else None
+
         # paths to exclude
         self.exclude_paths = [ os.path.join(self.input_folder, p.strip()) for p in exclude_paths.split(',') ] if exclude_paths is not None else None
 
         # files to exclude
-        #self.excludes = excludes.split(',')
-        self.excludes = [ re.compile(e.strip()) for e in excludes.split(',') ] if excludes is not None else None
+        #self.exclude_files = exclude_files.split(',')
+        self.exclude_files = [ re.compile(e.strip()) for e in exclude_files.split(',') ] if exclude_files is not None else None
 
         # whether the source should be re-mapped for file loads
         self.source = source
@@ -63,7 +68,7 @@ class Crawler:
 
                 # clean out anything from new that matches an exclude
                 ditch_file = False
-                for e in self.excludes:
+                for e in self.exclude_files:
                     if e.search(file_handle) is not None:
                         ditch_file = True
 
@@ -91,7 +96,10 @@ class Crawler:
                 if not identifier:
                     continue
 
-                files_list.append(self.which_file(tree, file_handle))
+
+                document = self.which_file(tree, file_handle)
+                if document is not None:
+                    files_list.append(document)
 
         # this is the list of files to be transformed and submitted to SOLR
         return files_list
@@ -109,8 +117,18 @@ class Crawler:
             if len(self.source) == 2:
                 source = source.replace(self.source[0].strip(), self.source[1].strip())
                 if os.path.exists(source):
-                    log.debug("Using the XML content for: %s" % file_handle)
-                    return (source, 'xml')
+                    tree = etree.parse(source)
+
+                    # ditch it if it's a type which is to be excluded
+                    etype = tree.xpath("/n:eac-cpf/n:control/n:localControl[@localType='typeOfEntity']/n:term",
+                           namespaces={'n': 'urn:isbn:1-931666-33-4' })
+                    etype = etype[0]
+                    if etype.text in self.exclude_types:
+                        log.info("Excluding: %s, (type: %s)" % (file_handle, etype.text))
+                        return None
+                    else:
+                        log.debug("Using the XML content for: %s" % file_handle)
+                        return (source, 'xml')
                 else:
                     log.warn("XML datafile referenced in %s but I couldn't retrieve it." % file_handle)
                     log.debug("Using the HTML content for: %s" % file_handle)

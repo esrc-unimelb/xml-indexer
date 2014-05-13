@@ -36,7 +36,6 @@ class Transformer:
         log.info('Transformer initialised')
 
     def run(self):
-        log.info("Transforing the content found")
         """Process each document in the input files_list"""
 
         # wipe the output folder
