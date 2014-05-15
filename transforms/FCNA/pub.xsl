@@ -16,12 +16,15 @@
     limitations under the License.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+
+    <xsl:import href="../lib/common.xsl" />
+
     <xsl:output method="text" indent="yes" encoding="UTF-8" omit-xml-declaration="yes" />
     <xsl:template match="/">
         <add>
             <doc>
                 <field name="id"><xsl:value-of select="//meta[@name='DC.Identifier']/@content" /></field>
-                <field name="type">Publication</field>
+                <field name="type"><xsl:call-template name="pub_resource_type" /></field>
                 <field name="creator"><xsl:value-of select="//meta[@name='DC.Creator']/@content" /></field>
                 <!-- <field name="name"><xsl:value-of select="//meta[@name='DC.Title']/@content" /></field> -->
                 <field name="name"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='title']" /></field>
