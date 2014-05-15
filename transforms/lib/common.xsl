@@ -4,27 +4,37 @@
     xmlns:n="urn:isbn:1-931666-33-4"
     xmlns:str="http://exslt.org/strings"
     extension-element-prefixes="str"
+    exclude-result-prefixes="n str"
     version="1.0">
 
     <!-- Extract the dobject type -->
     <xsl:template name="dobject_type">
-        <xsl:value-of select="normalize-space(//main[@id='main']/h1/text()[normalize-space()])" />
-        <xsl:value-of select="normalize-space(//div[@id='main']/h1/text()[normalize-space()])" />
-        <xsl:value-of select="normalize-space(//div[@class='section']/h1/text()[normalize-space()])" />
+        <field name="type">
+            <xsl:value-of select="normalize-space(//main[@id='main']/h1/text()[normalize-space()])" />
+            <xsl:value-of select="normalize-space(//div[@id='main']/h1/text()[normalize-space()])" />
+            <xsl:value-of select="normalize-space(//div[@class='section']/h1/text()[normalize-space()])" />
+        </field>
+        <field name="main_type">Digital Object</field>
     </xsl:template>
 
     <!-- Extract the arc resource type -->
     <xsl:template name="arc_resource_type">
-        <xsl:value-of select="normalize-space(//main[@id='main']/h1/text()[normalize-space()])" />
-        <xsl:value-of select="normalize-space(//div[@id='main']/h1/text()[normalize-space()])" />
-        <xsl:value-of select="normalize-space(//div[@class='section']/h1/text()[normalize-space()])" />
+        <field name="type">
+            <xsl:value-of select="normalize-space(//main[@id='main']/h1/text()[normalize-space()])" />
+            <xsl:value-of select="normalize-space(//div[@id='main']/h1/text()[normalize-space()])" />
+            <xsl:value-of select="normalize-space(//div[@class='section']/h1/text()[normalize-space()])" />
+        </field>
+        <field name="main_type">Archival Resource</field>
     </xsl:template>
 
     <!-- Extract the pub resource type -->
     <xsl:template name="pub_resource_type">
-        <xsl:value-of select="normalize-space(//main[@id='main']/h1/text()[normalize-space()])" />
-        <xsl:value-of select="normalize-space(//div[@id='main']/h1/text()[normalize-space()])" />
-        <xsl:value-of select="normalize-space(//div[@class='section']/h1/text()[normalize-space()])" />
+        <field name="type">
+            <xsl:value-of select="normalize-space(//main[@id='main']/h1/text()[normalize-space()])" />
+            <xsl:value-of select="normalize-space(//div[@id='main']/h1/text()[normalize-space()])" />
+            <xsl:value-of select="normalize-space(//div[@class='section']/h1/text()[normalize-space()])" />
+        </field>
+        <field name="main_type">Publication</field>
     </xsl:template>
 
     <!-- Extract the dobject thumbnail -->
