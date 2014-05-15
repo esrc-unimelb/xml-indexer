@@ -72,7 +72,7 @@
                 </field>
             </xsl:when>
             <xsl:otherwise>
-                <field name="name"><xsl:value-of select="/n:eac-cpf/n:cpfDescription/n:identity/n:nameEntry/n:part" /></field>
+                <field name="name"><xsl:value-of select="/n:eac-cpf/n:cpfDescription/n:identity/n:nameEntry[position() = 1]/n:part" /></field>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
@@ -86,9 +86,12 @@
     <xsl:template name="binomial_name">
         <xsl:variable name="type" select="/n:eac-cpf/n:control/n:localControl[@localType='typeOfEntity']/n:term" />
         <xsl:choose>
-            <xsl:when test="$type != 'Person'">
-                <field name="binomial_name"><xsl:value-of select="/n:eac-cpf/n:cpfDescription/n:identity/n:nameEntry/n:part[position() = 2]" /></field>
+            <xsl:when test="$type = 'Person'">
+                <field name="binomial_name"><xsl:value-of select="/n:eac-cpf/n:cpfDescription/n:identity/n:nameEntry/n:part[@localType='honorific title']" /></field>
             </xsl:when>
+            <xsl:otherwise>
+                <field name="binomial_name"><xsl:value-of select="/n:eac-cpf/n:cpfDescription/n:identity/n:nameEntry/n:part[@localType='parent']" /></field>
+            </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
 </xsl:stylesheet>
