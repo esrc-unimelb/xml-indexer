@@ -8,23 +8,23 @@
 
     <!-- Extract the dobject type -->
     <xsl:template name="dobject_type">
-        <xsl:value-of select="normalize-space(//main[@id='main']/h1/text())" />
-        <xsl:value-of select="normalize-space(//div[@id='main']/h1/text())" />
-        <xsl:value-of select="normalize-space(//div[@class='section']/h1/text())" />
+        <xsl:value-of select="normalize-space(//main[@id='main']/h1/text()[normalize-space()])" />
+        <xsl:value-of select="normalize-space(//div[@id='main']/h1/text()[normalize-space()])" />
+        <xsl:value-of select="normalize-space(//div[@class='section']/h1/text()[normalize-space()])" />
     </xsl:template>
 
     <!-- Extract the arc resource type -->
     <xsl:template name="arc_resource_type">
-        <xsl:value-of select="normalize-space(//main[@id='main']/h1/text())" />
-        <xsl:value-of select="normalize-space(//div[@id='main']/h1/text())" />
-        <xsl:value-of select="normalize-space(//div[@class='section']/h1/text())" />
+        <xsl:value-of select="normalize-space(//main[@id='main']/h1/text()[normalize-space()])" />
+        <xsl:value-of select="normalize-space(//div[@id='main']/h1/text()[normalize-space()])" />
+        <xsl:value-of select="normalize-space(//div[@class='section']/h1/text()[normalize-space()])" />
     </xsl:template>
 
     <!-- Extract the pub resource type -->
     <xsl:template name="pub_resource_type">
-        <xsl:value-of select="normalize-space(//main[@id='main']/h1/text())" />
-        <xsl:value-of select="normalize-space(//div[@id='main']/h1/text())" />
-        <xsl:value-of select="normalize-space(//div[@class='section']/h1/text())" />
+        <xsl:value-of select="normalize-space(//main[@id='main']/h1/text()[normalize-space()])" />
+        <xsl:value-of select="normalize-space(//div[@id='main']/h1/text()[normalize-space()])" />
+        <xsl:value-of select="normalize-space(//div[@class='section']/h1/text()[normalize-space()])" />
     </xsl:template>
 
     <!-- Extract the dobject thumbnail -->
