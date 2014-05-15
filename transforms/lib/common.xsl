@@ -9,30 +9,24 @@
 
     <!-- Extract the dobject type -->
     <xsl:template name="dobject_type">
+        <xsl:variable name="type" select="str:split(//meta[@name='DC.Title']/@content, ' - ')" />
         <field name="type">
-            <xsl:value-of select="normalize-space(//main[@id='main']/h1/text()[normalize-space()])" />
-            <xsl:value-of select="normalize-space(//div[@id='main']/h1/text()[normalize-space()])" />
-            <xsl:value-of select="normalize-space(//div[@class='section']/h1/text()[normalize-space()])" />
+            <xsl:value-of select="$type" />
         </field>
         <field name="main_type">Digital Object</field>
     </xsl:template>
 
     <!-- Extract the arc resource type -->
     <xsl:template name="arc_resource_type">
-        <field name="type">
-            <xsl:value-of select="normalize-space(//main[@id='main']/h1/text()[normalize-space()])" />
-            <xsl:value-of select="normalize-space(//div[@id='main']/h1/text()[normalize-space()])" />
-            <xsl:value-of select="normalize-space(//div[@class='section']/h1/text()[normalize-space()])" />
-        </field>
+        <field name="type">Archival Resource</field>
         <field name="main_type">Archival Resource</field>
     </xsl:template>
 
     <!-- Extract the pub resource type -->
     <xsl:template name="pub_resource_type">
+        <xsl:variable name="type" select="str:split(//meta[@name='DC.Title']/@content, ' - ')" />
         <field name="type">
-            <xsl:value-of select="normalize-space(//main[@id='main']/h1/text()[normalize-space()])" />
-            <xsl:value-of select="normalize-space(//div[@id='main']/h1/text()[normalize-space()])" />
-            <xsl:value-of select="normalize-space(//div[@class='section']/h1/text()[normalize-space()])" />
+            <xsl:value-of select="$type" />
         </field>
         <field name="main_type">Publication</field>
     </xsl:template>
@@ -80,6 +74,21 @@
             <xsl:otherwise>
                 <field name="name"><xsl:value-of select="/n:eac-cpf/n:cpfDescription/n:identity/n:nameEntry/n:part" /></field>
             </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+
+    <!-- Extract the alternate name of the entity -->
+    <xsl:template match="/n:eac-cpf/n:cpfDescription/n:identity/n:nameEntry[position()>1]/n:part">
+        <field name="altname"><xsl:value-of select="." /></field>
+    </xsl:template>
+
+    <!-- Extract the binomial name of the entity -->
+    <xsl:template name="binomial_name">
+        <xsl:variable name="type" select="/n:eac-cpf/n:control/n:localControl[@localType='typeOfEntity']/n:term" />
+        <xsl:choose>
+            <xsl:when test="$type != 'Person'">
+                <field name="binomial_name"><xsl:value-of select="/n:eac-cpf/n:cpfDescription/n:identity/n:nameEntry/n:part[position() = 2]" /></field>
+            </xsl:when>
         </xsl:choose>
     </xsl:template>
 </xsl:stylesheet>

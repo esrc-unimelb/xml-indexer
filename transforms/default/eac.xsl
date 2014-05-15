@@ -30,6 +30,8 @@
                 <field name="type"><xsl:value-of select="/n:eac-cpf/n:control/n:localControl[@localType='typeOfEntity']/n:term" /></field>
                 <field name="creator"><xsl:value-of select="/nothere"/></field>
                 <xsl:call-template name="name" />
+                <xsl:apply-templates select="/n:eac-cpf/n:cpfDescription/n:identity/n:nameEntry[position()>1]/n:part" />
+                <xsl:call-template name="binomial_name" />
                 <field name="date_from"><xsl:value-of select="/n:eac-cpf/n:cpfDescription/n:description/n:existDates/n:dateRange/n:fromDate/@standardDate" /></field>
                 <field name="date_to"><xsl:value-of select="/n:eac-cpf/n:cpfDescription/n:description/n:existDates/n:dateRange/n:toDate/@standardDate" /></field>
                 <xsl:apply-templates select="/n:eac-cpf/n:cpfDescription/n:description/n:functions/n:function/n:term" />
