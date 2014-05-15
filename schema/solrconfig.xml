@@ -840,7 +840,9 @@
        <str name="spellcheck.onlyMorePopular ">true</str>
        <str name="spellcheck.collate">true</str>
        <str name="spellcheck.collateExtendedResults">false</str>
-       <str name="spellcheck.maxCollationTries">5</str>
+       <!-- see: https://stackoverflow.com/questions/20404504/solr-after-reloading-core-config-admin-panel-doesnt-respond
+            for why the next option is disabled - bug prevents solr from starting -->
+       <!--<str name="spellcheck.maxCollationTries">5</str>-->
        <str name="spellcheck.maxCollations">3</str>
      </lst>
      <!-- append spellchecking to our list of components -->
@@ -962,7 +964,7 @@
        <str name="spellcheck.maxResultsForSuggest">5</str>       
        <str name="spellcheck.collate">true</str>
        <str name="spellcheck.collateExtendedResults">false</str>  
-       <str name="spellcheck.maxCollationTries">5</str>
+       <!--<str name="spellcheck.maxCollationTries">5</str>-->
        <str name="spellcheck.maxCollations">3</str>           
      </lst>
      <!-- append spellchecking to our list of components -->
@@ -1726,8 +1728,8 @@
      <!-- For the purposes of the tutorial, JSON responses are written as
       plain text so that they are easy to read in *any* browser.
       If you expect a MIME type of "application/json" just remove this override.
+    <str name="content-type">text/plain; charset=UTF-8</str> 
      -->
-    <!-- <str name="content-type">text/plain; charset=UTF-8</str> -->
   </queryResponseWriter>
   
   <!--
