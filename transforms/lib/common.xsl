@@ -7,6 +7,11 @@
     exclude-result-prefixes="n str"
     version="1.0">
 
+    <!-- Examples
+      * extract text element of html node with removal of all whitespace
+      <xsl:value-of select="normalize-space(//main[@id='main']/h1/text()[normalize-space()])" />
+    -->
+
     <!-- Extract the dobject type -->
     <xsl:template name="dobject_type">
         <xsl:variable name="type" select="str:split(//meta[@name='DC.Title']/@content, ' - ')" />
@@ -52,6 +57,11 @@
 
     <!-- Extract the entity functions -->
     <xsl:template match="/n:eac-cpf/n:cpfDescription/n:description/n:functions/n:function/n:term">
+        <field name="function"><xsl:value-of select="." /></field>
+    </xsl:template>
+
+    <!-- Extract the entity functions -->
+    <xsl:template match="/n:eac-cpf/n:cpfDescription/n:description/n:occupations/n:occupation/n:term">
         <field name="function"><xsl:value-of select="." /></field>
     </xsl:template>
 
