@@ -31,7 +31,7 @@ class Transformer:
         self.date_fields = [ 'date_from', 'date_to' ]
 
         # the names of the fields which could have markup
-        self.markup_fields = [ 'text' ]
+        self.markup_fields = [ 'abstract', 'text', 'locality' ]
 
         log.info('Transformer initialised')
 

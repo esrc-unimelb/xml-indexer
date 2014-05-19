@@ -37,7 +37,7 @@ class markup_cleanser:
 
         c = lxml.html.clean.Cleaner(style=True, remove_tags = [ 'p' ])
         try:
-            return c.clean_html(field)
+            return c.clean_html(field).lstrip('<div>').rstrip('</div>')
         except:
             return field
 
