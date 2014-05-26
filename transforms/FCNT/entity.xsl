@@ -28,7 +28,6 @@
                 <field name="type">Entity</field>
                 <field name="creator"><xsl:value-of select="//meta[@name='DC.Creator']/@content" /></field>
                 <field name="name"><xsl:value-of select="//meta[@name='DC.Title']/@content" /></field>
-                <field name="name"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='altname']/ul/li" /></field>
                 <field name="date_from"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='startdate']" /></field>
                 <field name="date_to"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='enddate']" /></field>
                 <xsl:apply-templates select="//dl[@class='content-summary']/dd[@class='function']" />

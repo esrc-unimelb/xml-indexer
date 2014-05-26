@@ -27,8 +27,11 @@
                 <xsl:call-template name="pub_resource_type" />
                 <field name="creator"><xsl:value-of select="//meta[@name='DC.Creator']/@content" /></field>
                 <!--<field name="name"><xsl:value-of select="//meta[@name='DC.Title']/@content" /></field>-->
-                <field name="name"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='title']" /></field>
-                <field name="name"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='secondarytitle']" /></field>
+                <field name="name">
+                    <xsl:value-of select="//dl[@class='content-summary']/dd[@class='title']" />
+                    <xsl:text>, </xsl:text>
+                    <xsl:value-of select="//dl[@class='content-summary']/dd[@class='secondarytitle']" />
+                </field>
                 <field name="author"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='author']" /></field>
                 <field name="editor"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='secondaryauthor']" /></field>
                 <field name="imprint"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='imprint']" /></field>
