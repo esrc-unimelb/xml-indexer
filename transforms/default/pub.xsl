@@ -29,8 +29,10 @@
                 <!--<field name="name"><xsl:value-of select="//meta[@name='DC.Title']/@content" /></field>-->
                 <field name="name">
                     <xsl:value-of select="//dl[@class='content-summary']/dd[@class='title']" />
-                    <xsl:text>, </xsl:text>
-                    <xsl:value-of select="//dl[@class='content-summary']/dd[@class='secondarytitle']" />
+                    <xsl:if test="//dl[@class='content-summary']/dd[@class='secondarytitle']">
+                        <xsl:text>, </xsl:text>
+                        <xsl:value-of select="//dl[@class='content-summary']/dd[@class='secondarytitle']" />
+                    </xsl:if>
                 </field>
                 <field name="author"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='author']" /></field>
                 <field name="editor"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='secondaryauthor']" /></field>
