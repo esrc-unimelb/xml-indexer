@@ -134,6 +134,7 @@
 
     <field name="name" type="text_en_splitting" indexed="true" stored="true" multiValued="false" required="false" 
         termVectors="true" termPositions="true" termOffsets="true" />
+    <field name="name_sort" type="string" indexed="true" stored="false" multiValued="false" required="false" />
     <field name="altname" type="text_en_splitting" indexed="true" stored="true" multiValued="true" required="false" />
     <field name="binomial_name" type="text_en_splitting" indexed="true" stored="true" multiValued="false" required="false" />
 
@@ -192,8 +193,8 @@
   is added to the index.  It's used either to index the same field differently,
   or to add multiple fields to the same field for easier/faster searching.  -->
 
+  <copyField source="name" dest="name_sort" />
   <!-- copy into hints field 
-  <copyField source="title" dest="hints" />
   <copyField source="city" dest="hints" />
 
   copy data fields into default search field
