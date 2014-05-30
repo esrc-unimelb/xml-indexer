@@ -7,6 +7,7 @@ import logging
 import magic
 import urlparse
 from lxml import html, etree
+from datetime import datetime, timedelta
 log = logging.getLogger('CRAWLER')
 
 class Crawler:
@@ -43,6 +44,10 @@ class Crawler:
 
         # whether the source should be re-mapped for file loads
         self.source = source
+
+        # initialise date boundaries
+        self.date_from = ''
+        self.date_to = ''
 
         log.info('Crawler initialised')
 
@@ -96,13 +101,17 @@ class Crawler:
                 if not identifier:
                     continue
 
-
                 document = self.which_file(tree, file_handle)
                 if document is not None:
                     files_list.append(document)
 
+        # print the dataset existance dates
+        self.date_from = str(datetime.strptime(self.date_from, '%Y-%m-%d') - timedelta(weeks=520)).split(' ')[0]
+        self.date_to = str(datetime.strptime(self.date_to, '%Y-%m-%d') + timedelta(weeks=520)).split(' ')[0]
+        log.debug("Dataset existance range: %s - %s" % (self.date_from, self.date_to))
+
         # this is the list of files to be transformed and submitted to SOLR
-        return files_list
+        return files_list, [self.date_from, self.date_to]
 
     def which_file(self, tree, file_handle):
 
@@ -128,6 +137,34 @@ class Crawler:
                         return None
                     else:
                         log.debug("Using the XML content for: %s" % file_handle)
+
+                        # now extract date_from and date_to from the dataset
+                        #  so we can determine the bounds of the dataset
+                        date_from = tree.xpath("/n:eac-cpf/n:cpfDescription/n:description/n:existDates/n:dateRange/n:fromDate/@standardDate",
+                            namespaces={'n': 'urn:isbn:1-931666-33-4' })
+                        date_to = tree.xpath("/n:eac-cpf/n:cpfDescription/n:description/n:existDates/n:dateRange/n:toDate/@standardDate",
+                            namespaces={'n': 'urn:isbn:1-931666-33-4' })
+
+                        if (date_from):
+                            dn = datetime.strptime(date_from[0], '%Y-%m-%d')
+                            try:
+                                do = datetime.strptime(self.date_from, '%Y-%m-%d')
+
+                                if dn < do:
+                                    self.date_from = dn
+                            except:
+                                self.date_from = date_from[0]
+
+                        if (date_to):
+                            dt = datetime.strptime(date_to[0], '%Y-%m-%d')
+                            try:
+                                do = datetime.strptime(self.date_to, '%Y-%m-%d')
+                                if dt > do:
+                                    self.date_to = dt;
+                            except:
+                                self.date_to = date_to[0]
+                            
+
                         return (source, 'xml')
                 else:
                     log.warn("XML datafile referenced in %s but I couldn't retrieve it." % file_handle)

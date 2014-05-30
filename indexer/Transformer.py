@@ -13,7 +13,7 @@ log = logging.getLogger('TRANSFORMER')
 
 class Transformer:
 
-    def __init__(self, files_list, site, output_folder, transforms, solr_service):
+    def __init__(self, files_list, site, output_folder, transforms, existence_range):
         # what to process
         self.files_list = files_list
 
@@ -34,28 +34,9 @@ class Transformer:
         # the names of the fields which could have markup
         self.markup_fields = [ 'abstract', 'text', 'locality' ]
 
-        # get the date bounds from the existing dataset and 
-        #  use those to set date bounds on entities with missing
-        #  date contet: +/- 10
-        try:
-            resp = requests.get("%s/select?q=*:*&rows=1&wt=json&sort=date_from asc" % solr_service)
-            resp = resp.json()
-            date_lower_bound = resp['response']['docs'][0]['date_from'].split('-')[0]
-            self.date_lower_bound = int(date_lower_bound) - int(date_lower_bound[-1:]) - 10
-        except:
-            # if the index is empty - set a stupid start date
-            #  this will become more reasonable on the next run when data exists
-            self.date_lower_bound = '0001'
-
-        try:
-            resp = requests.get("%s/select?q=*:*&rows=1&wt=json&sort=date_to desc" % solr_service)
-            resp = resp.json()
-            self.date_upper_bound = int(resp['response']['docs'][0]['date_to'].split('-')[0]) + 10
-            log.debug("Dataset date boundaries: %s - %s" % (self.date_lower_bound, self.date_upper_bound))
-        except:
-            # if the index is empty - set a stupid end date
-            #  this will become more reasonable on the next run when data exists
-            self.date_upper_bound = '9000'
+        # the existence range of the dataset
+        self.date_lower_bound = existence_range[0]
+        self.date_upper_bound = existence_range[1]
 
         log.info('Transformer initialised')
 
@@ -133,15 +114,19 @@ class Transformer:
         tmp.append(site_code)
 
         # add in the faux start and end date as required
-        if not d.xpath('/add/doc/field[@name="date_from"]'):
-            df = etree.Element('field', name='date_from')
-            df.text = "%s-01-01T00:00:00Z" % self.date_lower_bound
-            tmp.append(df)
+        df = etree.Element('field', name='exist_from')
+        if d.xpath('/add/doc/field[@name="date_from"]'):
+            df.text = d.xpath('/add/doc/field[@name="date_from"]')[0].text
+        else:
+            df.text = "%sT00:00:00Z" % self.date_lower_bound
+        tmp.append(df)
 
-        if not d.xpath('/add/doc/field[@name="date_to"]'):
-            dt = etree.Element('field', name='date_to')
-            dt.text = "%s-01-01T00:00:00Z" % self.date_upper_bound
-            tmp.append(dt)
+        dt = etree.Element('field', name='exist_to')
+        if d.xpath('/add/doc/field[@name="date_to"]'):
+            dt.text = d.xpath('/add/doc/field[@name="date_to"]')[0].text
+        else:
+            dt.text = "%sT00:00:00Z" % self.date_upper_bound
+        tmp.append(dt)
 
         # now we want to save the document to self.output_folder
         #

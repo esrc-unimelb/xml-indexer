@@ -52,7 +52,9 @@ class Indexer:
 
         with Timer() as t:
             c = Crawler(self.cfg)
-            files_list = c.run()
+            (files_list, existence_range) = c.run()
+
+        self.existence_range = existence_range
 
         return files_list
 
@@ -70,8 +72,14 @@ class Indexer:
         log.debug("Output folder for transforms: %s" % output_folder)
         log.debug("Transform search path: %s" % transforms)
 
+        try:
+            if not self.existence_range:
+                pass
+        except:
+            self.existence_range = [ '0001-01-01', '9000-12-31' ]
+
         with Timer() as t:
-            t = Transformer(content, self.site, output_folder, transforms, solr_service)
+            t = Transformer(content, self.site, output_folder, transforms, self.existence_range)
             if document is not None:
                 t.process_document((document, doctype), debug=True)
             else:
