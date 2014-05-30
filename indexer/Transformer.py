@@ -45,7 +45,7 @@ class Transformer:
         except:
             # if the index is empty - set a stupid start date
             #  this will become more reasonable on the next run when data exists
-            self.date_lower_bound = 0001
+            self.date_lower_bound = '0001'
 
         try:
             resp = requests.get("%s/select?q=*:*&rows=1&wt=json&sort=date_to desc" % solr_service)
@@ -55,7 +55,7 @@ class Transformer:
         except:
             # if the index is empty - set a stupid end date
             #  this will become more reasonable on the next run when data exists
-            self.date_upper_bound = 9000
+            self.date_upper_bound = '9000'
 
         log.info('Transformer initialised')
 
