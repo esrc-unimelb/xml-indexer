@@ -7,12 +7,13 @@ from lxml import etree, html
 from clean.empty import elements
 from clean.date import date_cleanser
 from clean.markup import markup_cleanser
+import requests
 
 log = logging.getLogger('TRANSFORMER')
 
 class Transformer:
 
-    def __init__(self, files_list, site, output_folder, transforms):
+    def __init__(self, files_list, site, output_folder, transforms, solr_service):
         # what to process
         self.files_list = files_list
 
@@ -32,6 +33,19 @@ class Transformer:
 
         # the names of the fields which could have markup
         self.markup_fields = [ 'abstract', 'text', 'locality' ]
+
+        # get the date bounds from the existing dataset and 
+        #  use those to set date bounds on entities with missing
+        #  date contet: +/- 10
+        resp = requests.get("%s/select?q=*:*&rows=1&wt=json&sort=date_from asc" % solr_service)
+        resp = resp.json()
+        date_lower_bound = resp['response']['docs'][0]['date_from'].split('-')[0]
+        self.date_lower_bound = int(date_lower_bound) - int(date_lower_bound[-1:]) - 10
+
+        resp = requests.get("%s/select?q=*:*&rows=1&wt=json&sort=date_to desc" % solr_service)
+        resp = resp.json()
+        self.date_upper_bound = int(resp['response']['docs'][0]['date_to'].split('-')[0]) + 10
+        log.debug("Dataset date boundaries: %s - %s" % (self.date_lower_bound, self.date_upper_bound))
 
         log.info('Transformer initialised')
 
@@ -100,10 +114,6 @@ class Transformer:
         #  solr to barf horribly...
         elements().strip_empty_elements(d)
 
-        # when testing against a single document, this is the line that spits
-        #  the result to stdout for viewing
-        if debug:
-            print etree.tostring(d, pretty_print=True)
 
         # add in the metadata the indexer users
         tmp = d.xpath('/add/doc')[0]
@@ -112,6 +122,17 @@ class Transformer:
         site_code = etree.Element('field', name='site_code')
         site_code.text = self.site
         tmp.append(site_code)
+
+        # add in the faux start and end date as required
+        if not d.xpath('/add/doc/field[@name="date_from"]'):
+            df = etree.Element('field', name='date_from')
+            df.text = "%s-01-01T00:00:00Z" % self.date_lower_bound
+            tmp.append(df)
+
+        if not d.xpath('/add/doc/field[@name="date_to"]'):
+            dt = etree.Element('field', name='date_to')
+            dt.text = "%s-01-01T00:00:00Z" % self.date_upper_bound
+            tmp.append(dt)
 
         # now we want to save the document to self.output_folder
         #
@@ -122,12 +143,17 @@ class Transformer:
             log.error("Couldn't get unique id for %s so I can't save it" % doc[0])
             return
 
+        # when testing against a single document, this is the line that spits
+        #  the result to stdout for viewing
+        if debug:
+            print etree.tostring(tmp, pretty_print=True)
+
         try:
             uniqueid = uniqueid[0].text.split('://')[1]
             output_file = os.path.join(self.output_folder, uniqueid.replace('/', '-'))
             log.debug("Writing output to: %s" % output_file)
             with open(output_file, 'w') as f:
-                f.write(etree.tostring(d, pretty_print=True))
+                f.write(etree.tostring(tmp, pretty_print=True))
         except:
             log.error("Couldn't save the output from: %s" % doc[0]) 
 
