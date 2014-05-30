@@ -114,19 +114,21 @@ class Transformer:
         tmp.append(site_code)
 
         # add in the faux start and end date as required
-        df = etree.Element('field', name='exist_from')
-        if d.xpath('/add/doc/field[@name="date_from"]'):
-            df.text = d.xpath('/add/doc/field[@name="date_from"]')[0].text
-        else:
-            df.text = "%sT00:00:00Z" % self.date_lower_bound
-        tmp.append(df)
+        if self.date_lower_bound is not None:
+            df = etree.Element('field', name='exist_from')
+            if d.xpath('/add/doc/field[@name="date_from"]'):
+                df.text = d.xpath('/add/doc/field[@name="date_from"]')[0].text
+            else:
+                df.text = "%sT00:00:00Z" % self.date_lower_bound
+            tmp.append(df)
 
-        dt = etree.Element('field', name='exist_to')
-        if d.xpath('/add/doc/field[@name="date_to"]'):
-            dt.text = d.xpath('/add/doc/field[@name="date_to"]')[0].text
-        else:
-            dt.text = "%sT00:00:00Z" % self.date_upper_bound
-        tmp.append(dt)
+        if self.date_upper_bound is not None:
+            dt = etree.Element('field', name='exist_to')
+            if d.xpath('/add/doc/field[@name="date_to"]'):
+                dt.text = d.xpath('/add/doc/field[@name="date_to"]')[0].text
+            else:
+                dt.text = "%sT00:00:00Z" % self.date_upper_bound
+            tmp.append(dt)
 
         # now we want to save the document to self.output_folder
         #

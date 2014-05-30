@@ -46,8 +46,8 @@ class Crawler:
         self.source = source
 
         # initialise date boundaries
-        self.date_from = ''
-        self.date_to = ''
+        self.date_from = None
+        self.date_to = None
 
         log.info('Crawler initialised')
 
@@ -106,8 +106,10 @@ class Crawler:
                     files_list.append(document)
 
         # print the dataset existance dates
-        self.date_from = str(datetime.strptime(self.date_from, '%Y-%m-%d') - timedelta(weeks=520)).split(' ')[0]
-        self.date_to = str(datetime.strptime(self.date_to, '%Y-%m-%d') + timedelta(weeks=520)).split(' ')[0]
+        if self.date_from is not None:
+            self.date_from = str(datetime.strptime(self.date_from, '%Y-%m-%d') - timedelta(weeks=520)).split(' ')[0]
+        if self.date_to is not None:
+            self.date_to = str(datetime.strptime(self.date_to, '%Y-%m-%d') + timedelta(weeks=520)).split(' ')[0]
         log.debug("Dataset existance range: %s - %s" % (self.date_from, self.date_to))
 
         # this is the list of files to be transformed and submitted to SOLR

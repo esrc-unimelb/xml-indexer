@@ -76,7 +76,7 @@ class Indexer:
             if not self.existence_range:
                 pass
         except:
-            self.existence_range = [ '0001-01-01', '9000-12-31' ]
+            self.existence_range = [ None, None ]
 
         with Timer() as t:
             t = Transformer(content, self.site, output_folder, transforms, self.existence_range)
