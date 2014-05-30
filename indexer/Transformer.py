@@ -37,15 +37,25 @@ class Transformer:
         # get the date bounds from the existing dataset and 
         #  use those to set date bounds on entities with missing
         #  date contet: +/- 10
-        resp = requests.get("%s/select?q=*:*&rows=1&wt=json&sort=date_from asc" % solr_service)
-        resp = resp.json()
-        date_lower_bound = resp['response']['docs'][0]['date_from'].split('-')[0]
-        self.date_lower_bound = int(date_lower_bound) - int(date_lower_bound[-1:]) - 10
+        try:
+            resp = requests.get("%s/select?q=*:*&rows=1&wt=json&sort=date_from asc" % solr_service)
+            resp = resp.json()
+            date_lower_bound = resp['response']['docs'][0]['date_from'].split('-')[0]
+            self.date_lower_bound = int(date_lower_bound) - int(date_lower_bound[-1:]) - 10
+        except:
+            # if the index is empty - set a stupid start date
+            #  this will become more reasonable on the next run when data exists
+            self.date_lower_bound = 0001
 
-        resp = requests.get("%s/select?q=*:*&rows=1&wt=json&sort=date_to desc" % solr_service)
-        resp = resp.json()
-        self.date_upper_bound = int(resp['response']['docs'][0]['date_to'].split('-')[0]) + 10
-        log.debug("Dataset date boundaries: %s - %s" % (self.date_lower_bound, self.date_upper_bound))
+        try:
+            resp = requests.get("%s/select?q=*:*&rows=1&wt=json&sort=date_to desc" % solr_service)
+            resp = resp.json()
+            self.date_upper_bound = int(resp['response']['docs'][0]['date_to'].split('-')[0]) + 10
+            log.debug("Dataset date boundaries: %s - %s" % (self.date_lower_bound, self.date_upper_bound))
+        except:
+            # if the index is empty - set a stupid end date
+            #  this will become more reasonable on the next run when data exists
+            self.date_upper_bound = 9000
 
         log.info('Transformer initialised')
 
