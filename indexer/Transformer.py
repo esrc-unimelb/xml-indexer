@@ -124,7 +124,6 @@ class Transformer:
         #  solr to barf horribly...
         elements().strip_empty_elements(d)
 
-
         # add in the metadata the indexer users
         tmp = d.xpath('/add/doc')[0]
 
@@ -153,17 +152,20 @@ class Transformer:
             log.error("Couldn't get unique id for %s so I can't save it" % doc[0])
             return
 
+        add = etree.Element('add')
+        add.append(tmp)
+
         # when testing against a single document, this is the line that spits
         #  the result to stdout for viewing
         if debug:
-            print etree.tostring(tmp, pretty_print=True)
+            print etree.tostring(add, pretty_print=True)
 
         try:
             uniqueid = uniqueid[0].text.split('://')[1]
             output_file = os.path.join(self.output_folder, uniqueid.replace('/', '-'))
             log.debug("Writing output to: %s" % output_file)
             with open(output_file, 'w') as f:
-                f.write(etree.tostring(tmp, pretty_print=True))
+                f.write(etree.tostring(add, pretty_print=True))
         except:
             log.error("Couldn't save the output from: %s" % doc[0]) 
 
