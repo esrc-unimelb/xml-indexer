@@ -106,10 +106,6 @@ class Crawler:
                     files_list.append(document)
 
         # print the dataset existance dates
-        if self.date_from is not None:
-            self.date_from = str(datetime.strptime(self.date_from, '%Y-%m-%d') - timedelta(weeks=520)).split(' ')[0]
-        if self.date_to is not None:
-            self.date_to = str(datetime.strptime(self.date_to, '%Y-%m-%d') + timedelta(weeks=520)).split(' ')[0]
         log.debug("Dataset existance range: %s - %s" % (self.date_from, self.date_to))
 
         # this is the list of files to be transformed and submitted to SOLR
@@ -153,7 +149,7 @@ class Crawler:
                                 do = datetime.strptime(self.date_from, '%Y-%m-%d')
 
                                 if dn < do:
-                                    self.date_from = dn
+                                    self.date_from = dn.strftime('%Y-%m-%d')
                             except:
                                 self.date_from = date_from[0]
 
@@ -162,7 +158,7 @@ class Crawler:
                             try:
                                 do = datetime.strptime(self.date_to, '%Y-%m-%d')
                                 if dt > do:
-                                    self.date_to = dt;
+                                    self.date_to = dt.strftime('%Y-%m-%d')
                             except:
                                 self.date_to = date_to[0]
                             
