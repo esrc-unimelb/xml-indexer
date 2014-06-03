@@ -124,7 +124,12 @@ class Crawler:
             if len(self.source) == 2:
                 source = source.replace(self.source[0].strip(), self.source[1].strip())
                 if os.path.exists(source):
-                    tree = etree.parse(source)
+                    try:
+                        tree = etree.parse(source)
+                    except etree.XMLSyntaxError:
+                        log.warn("Broken XML datafile.")
+                        log.debug("Using the HTML content for: %s" % file_handle)
+                        return (file_handle, 'html')
 
                     # ditch it if it's a type which is to be excluded
                     etype = tree.xpath("/n:eac-cpf/n:control/n:localControl[@localType='typeOfEntity']/n:term",
