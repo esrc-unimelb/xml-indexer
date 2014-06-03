@@ -8,6 +8,7 @@ from clean.empty import elements
 from clean.date import date_cleanser
 from clean.markup import markup_cleanser
 import requests
+from datetime import datetime, timedelta
 
 log = logging.getLogger('TRANSFORMER')
 
@@ -35,8 +36,11 @@ class Transformer:
         self.markup_fields = [ 'abstract', 'text', 'locality' ]
 
         # the existence range of the dataset
-        self.date_lower_bound = existence_range[0]
-        self.date_upper_bound = existence_range[1]
+        df = datetime.strptime(existence_range[0], '%Y-%m-%d') - timedelta(weeks=52)
+        dt = datetime.strptime(existence_range[1], '%Y-%m-%d') + timedelta(weeks=52)
+
+        self.date_lower_bound = str(df).split(' ')[0]
+        self.date_upper_bound = str(dt).split(' ')[0]
 
         log.info('Transformer initialised')
 
