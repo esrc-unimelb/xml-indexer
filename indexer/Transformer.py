@@ -36,11 +36,16 @@ class Transformer:
         self.markup_fields = [ 'abstract', 'text', 'locality' ]
 
         # the existence range of the dataset
-        df = datetime.strptime(existence_range[0], '%Y-%m-%d') - timedelta(weeks=52)
-        dt = datetime.strptime(existence_range[1], '%Y-%m-%d') + timedelta(weeks=52)
-
-        self.date_lower_bound = str(df).split(' ')[0]
-        self.date_upper_bound = str(dt).split(' ')[0]
+        try:
+            df = datetime.strptime(existence_range[0], '%Y-%m-%d') - timedelta(weeks=52)
+            self.date_lower_bound = str(df).split(' ')[0]
+        except TypeError:
+            self.date_lower_bound = None
+        try:
+            dt = datetime.strptime(existence_range[1], '%Y-%m-%d') + timedelta(weeks=52)
+            self.date_upper_bound = str(dt).split(' ')[0]
+        except TypeError:
+            self.date_upper_bound = None
 
         log.info('Transformer initialised')
 
