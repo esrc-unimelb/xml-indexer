@@ -85,10 +85,11 @@ class Indexer:
             else:
                 t.run()
 
-    def post(self):
+    def post(self, solr_service):
         ### POST THE SOLR DOCUMENTS TO THE INDEX
         input_folder = os.path.join(self.site_cache, 'post')
-        solr_service = self.cfg.get('post', 'index') if (self.cfg.has_section('post') and self.cfg.has_option('post', 'index')) else None
+        if solr_service is None:
+            solr_service = self.cfg.get('post', 'index') if (self.cfg.has_section('post') and self.cfg.has_option('post', 'index')) else None
 
         log.debug("Content folder to be posted : %s" % input_folder)
         log.debug("Solr service: %s" % solr_service)

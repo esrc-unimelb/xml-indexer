@@ -23,6 +23,8 @@ if __name__ == "__main__":
         help='Only perform the crawl and transform stages.')
     parser.add_argument('--post', dest='post', action='store_true', default=None,
         help='Only perform the post stage (includes index clean).')
+    parser.add_argument('--solr', dest='solr', default=None,
+        help='Override the solr defined in the config file.')
 
     parser.add_argument('--info', dest='info', action='store_true', help='Turn on informational messages')
     parser.add_argument('--debug', dest='debug', action='store_true', help='Turn on full debugging (includes --info)')
@@ -63,5 +65,5 @@ if __name__ == "__main__":
 
     if args.post is not None:
         ### POSTER
-        indexer.post()
+        indexer.post(args.solr)
     
