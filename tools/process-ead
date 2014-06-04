@@ -1,0 +1,42 @@
+#!/usr/local/scholarly-python2/bin/python
+
+import sys
+sys.path.append('../')
+import argparse
+import logging
+import ConfigParser
+import os.path
+from lxml import html, etree
+from indexer.Indexer import Indexer
+from indexer.Crawler import Crawler
+from indexer.EADProcessor import EADProcessor
+
+
+if __name__ == "__main__":
+
+    # read and check the options
+    parser = argparse.ArgumentParser(description='eSRC EAD Processor')
+
+    parser.add_argument('--config',   dest='config', required=True, help='The path to the default Indexer configuration.')
+    parser.add_argument('--site',     dest='site',   required=True, help='The site to process.')
+
+    args = parser.parse_args()
+
+    # get the logger
+    logging.basicConfig(level=logging.DEBUG)
+    log = logging.getLogger('TRANSFORM')
+
+    # check the arguments
+    if not os.path.exists(args.config):
+        log.error("Does %s exist?" % args.config)
+        sys.exit()
+
+    log.debug("Indexing: %s" % args.site)
+
+    i = Indexer(args.site, args.config)
+    if i.cfg.has_section('hdms'):
+        i.transform([], document=None, doctype=None, hdms_only=True)
+
+
+
+

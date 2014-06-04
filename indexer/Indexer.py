@@ -9,6 +9,7 @@ from indexer.Timer import Timer
 from indexer.Crawler import Crawler
 from indexer.Transformer import Transformer
 from indexer.Poster import Poster
+from indexer.EADProcessor import EADProcessor
 
 log = logging.getLogger('INDEXER')
 
@@ -58,7 +59,7 @@ class Indexer:
 
         return files_list
 
-    def transform(self, content, document=None, doctype=None):
+    def transform(self, content, document=None, doctype=None, hdms_only=False):
         ### TRANSFORM THE CONTENT MARKED FOR INGESTION INTO SOLR
         output_folder = os.path.join(self.site_cache, 'post')
         transforms = self.cfg.get('transform', 'transforms') if (self.cfg.has_section('transform') and self.cfg.has_option('transform', 'transforms')) else None
@@ -78,12 +79,16 @@ class Indexer:
         except:
             self.existence_range = [ None, None ]
 
-        with Timer() as t:
-            t = Transformer(content, self.site, output_folder, transforms, self.existence_range)
-            if document is not None:
-                t.process_document((document, doctype), debug=True)
-            else:
-                t.run()
+        if not hdms_only:
+            with Timer() as t:
+                t = Transformer(content, self.site, output_folder, transforms, self.existence_range)
+                if document is not None:
+                    t.process_document((document, doctype), debug=True)
+                else:
+                    t.run()
+
+        if self.cfg.has_section('hdms'):
+            self.process_hdms_data(transforms, output_folder)
 
     def post(self, solr_service):
         ### POST THE SOLR DOCUMENTS TO THE INDEX
@@ -98,4 +103,9 @@ class Indexer:
             p = Poster(input_folder, solr_service, self.site)
             p.run()
 
-
+    def process_hdms_data(self, transforms, output_folder):
+        ead_datafile = self.cfg.get('hdms', 'input') if (self.cfg.has_section('hdms') and self.cfg.has_option('hdms', 'input')) else None
+        source = self.cfg.get('hdms', 'source') if (self.cfg.has_section('hdms') and self.cfg.has_option('hdms', 'source')) else None
+        if ead_datafile is not None:
+            ead = EADProcessor(ead_datafile, transforms, source, output_folder)
+            ead.run()
