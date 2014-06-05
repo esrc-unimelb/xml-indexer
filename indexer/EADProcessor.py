@@ -44,7 +44,7 @@ class EADProcessor:
             #creator = series_id.xpath('/c01/did/origination[@label="Provenance"]/ref/persname')
             #print etree.tostring(series, pretty_print=True)
 
-            for item in series.xpath('//c02'):
+            for item in series.xpath('c02'):
                 item_id = item.attrib['id']
                 doc = self.xsl(item)
 
