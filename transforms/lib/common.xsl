@@ -76,9 +76,14 @@
         <xsl:choose>
             <xsl:when test="$type = 'Person'">
                 <field name="name">
-                    <xsl:value-of select="/n:eac-cpf/n:cpfDescription/n:identity/n:nameEntry/n:part[@localType='familyname']" />
-                    <xsl:text>, </xsl:text>
-                    <xsl:value-of select="/n:eac-cpf/n:cpfDescription/n:identity/n:nameEntry/n:part[@localType='givenname']" />
+                    <xsl:if test="/n:eac-cpf/n:cpfDescription/n:identity/n:nameEntry/n:part[@localType='familyname']">
+                        <xsl:value-of select="/n:eac-cpf/n:cpfDescription/n:identity/n:nameEntry/n:part[@localType='familyname']" />
+                        <xsl:text>, </xsl:text>
+                        <xsl:value-of select="/n:eac-cpf/n:cpfDescription/n:identity/n:nameEntry/n:part[@localType='givenname']" />
+                    </xsl:if>
+                    <xsl:if test="not(/n:eac-cpf/n:cpfDescription/n:identity/n:nameEntry/n:part[@localType='familyname'])">
+                        <xsl:value-of select="/n:eac-cpf/n:cpfDescription/n:identity/n:nameEntry[position() = 1]/n:part" />
+                    </xsl:if>
                 </field>
             </xsl:when>
             <xsl:otherwise>
