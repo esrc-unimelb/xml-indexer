@@ -49,7 +49,7 @@ class EADProcessor:
                 doc = self.xsl(item)
 
                 eid = etree.Element('field', name='id')
-                eid.text = "%s/%s#%s" % (self.source, series_id, item_id)
+                eid.text = "%s/%s-%s" % (self.source, series_id, item_id)
 
 
                 d = doc.xpath('/add/doc')[0]
