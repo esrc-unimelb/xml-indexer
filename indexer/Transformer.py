@@ -14,12 +14,12 @@ log = logging.getLogger('TRANSFORMER')
 
 class Transformer:
 
-    def __init__(self, files_list, site, output_folder, transforms, existence_range):
+    def __init__(self, files_list, metadata, output_folder, transforms, existence_range):
         # what to process
         self.files_list = files_list
 
         # the site code
-        self.site = site
+        self.metadata = metadata
 
         # where to stash the output
         self.output_folder = output_folder
@@ -118,10 +118,18 @@ class Transformer:
         # add in the metadata the indexer users
         tmp = d.xpath('/add/doc')[0]
 
-        # add the solr unique id field 
+        # add the site metadata into the record
         site_code = etree.Element('field', name='site_code')
-        site_code.text = self.site
+        site_code.text = self.metadata['site_code']
         tmp.append(site_code)
+
+        site_name = etree.Element('field', name='site_name')
+        site_name.text = self.metadata['site_name']
+        tmp.append(site_name)
+
+        site_url = etree.Element('field', name='site_url')
+        site_url.text = self.metadata['site_url']
+        tmp.append(site_url)
 
         # add in the faux start and end date as required
         #  but only if the record has a date from or to defined - for those

@@ -63,7 +63,13 @@ class Indexer:
         ### TRANSFORM THE CONTENT MARKED FOR INGESTION INTO SOLR
         output_folder = os.path.join(self.site_cache, 'post')
         transforms = self.cfg.get('transform', 'transforms') if (self.cfg.has_section('transform') and self.cfg.has_option('transform', 'transforms')) else None
-        solr_service = self.cfg.get('post', 'index') if (self.cfg.has_section('post') and self.cfg.has_option('post', 'index')) else Noned
+        solr_service = self.cfg.get('post', 'index') if (self.cfg.has_section('post') and self.cfg.has_option('post', 'index')) else None
+
+        metadata = {
+            'site_code': self.site,
+            'site_name': self.cfg.get('meta', 'site_name') if (self.cfg.has_section('meta') and self.cfg.has_option('meta', 'site_name')) else None,
+            'site_url': self.cfg.get('meta', 'site_url') if (self.cfg.has_section('meta') and self.cfg.has_option('meta', 'site_url')) else None
+        }
 
         if not transforms:
             transforms = self.default_transforms
@@ -81,7 +87,7 @@ class Indexer:
 
         if not hdms_only:
             with Timer() as t:
-                t = Transformer(content, self.site, output_folder, transforms, self.existence_range)
+                t = Transformer(content, metadata, output_folder, transforms, self.existence_range)
                 if document is not None:
                     t.process_document((document, doctype), debug=True)
                 else:
