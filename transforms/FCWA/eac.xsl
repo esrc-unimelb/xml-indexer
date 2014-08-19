@@ -27,7 +27,9 @@
         <add>
             <doc>
                 <field name="id"><xsl:value-of select="/n:eac-cpf/n:cpfDescription/n:identity/n:entityId" /></field>
+                <xsl:call-template name="display_url" />
                 <field name="type"><xsl:value-of select="/n:eac-cpf/n:control/n:localControl[@localType='typeOfEntity']/n:term" /></field>
+                <field name="record_id"><xsl:value-of select="/n:eac-cpf/n:control/n:recordId" /></field>
                 <field name="creator"><xsl:value-of select="/nothere"/></field>
                 <xsl:call-template name="name" />
                 <xsl:apply-templates select="/n:eac-cpf/n:cpfDescription/n:identity/n:nameEntry[position()>1]/n:part" />
