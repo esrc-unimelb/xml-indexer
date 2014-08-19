@@ -20,12 +20,15 @@
     xmlns:str="http://exslt.org/strings"
     extension-element-prefixes="str"
     version="1.0">
+
+    <xsl:import href="../lib/common.xsl" />
     <xsl:output method="text" indent="yes" encoding="UTF-8" omit-xml-declaration="yes" />
     <xsl:template match="/">
         <add>
             <doc>
                 <field name="id"><xsl:value-of select="//meta[@name='DC.Identifier']/@content" /></field>
                 <field name="type">Entity</field>
+                <xsl:call-template name="record_id" />
                 <field name="creator"><xsl:value-of select="//meta[@name='DC.Creator']/@content" /></field>
                 <field name="name"><xsl:value-of select="//meta[@name='DC.Title']/@content" /></field>
                 <field name="date_from"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='startdate']" /></field>

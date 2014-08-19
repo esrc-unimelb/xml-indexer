@@ -24,6 +24,7 @@
         <add>
             <doc>
                 <field name="id"><xsl:value-of select="//meta[@name='DC.Identifier']/@content" /></field>
+                <xsl:call-template name="record_id" />
                 <xsl:call-template name="arc_resource_type" />
                 <field name="creator"><xsl:value-of select="//meta[@name='DC.Creator']/@content" /></field>
                 <!--<field name="name"><xsl:value-of select="//meta[@name='DC.Title']/@content" /></field>-->
