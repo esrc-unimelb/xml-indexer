@@ -36,6 +36,15 @@
         <field name="main_type">Publication</field>
     </xsl:template>
 
+    <!-- Extract the record Id from DC.Identifier -->
+    <xsl:template name="record_id">
+        <xsl:variable name="filename" select="str:tokenize(//meta[@name='DC.Identifier']/@content, '/')" />
+        <xsl:variable name="rid" select="str:tokenize($filename[last()], '.')" />
+        <field name="record_id">
+            <xsl:value-of select="$rid" />
+        </field>
+    </xsl:template>
+
     <!-- Extract the dobject thumbnail -->
     <xsl:template name="thumbnail">
         <xsl:variable name="docpath" select="str:split(//meta[@name='DC.Identifier']/@content, '/objects')" />
@@ -108,5 +117,16 @@
                 <field name="binomial_name"><xsl:value-of select="/n:eac-cpf/n:cpfDescription/n:identity/n:nameEntry/n:part[@localType='parent']" /></field>
             </xsl:otherwise>
         </xsl:choose>
+    </xsl:template>
+
+
+    <!-- Create the display url -->
+    <xsl:template name="display_url">
+        <field name="display_url">
+            <xsl:variable name="path" select="str:split(/n:eac-cpf/n:cpfDescription/n:identity/n:entityId, '/biogs')" />
+            <xsl:value-of select="str:replace($path, 'ref', 'guide')" />
+            <xsl:text>/</xsl:text>
+            <xsl:value-of select="/n:eac-cpf/n:control/n:recordId" />
+         </field>
     </xsl:template>
 </xsl:stylesheet>
