@@ -132,6 +132,7 @@
     <field name="site_code" type="string" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="site_name" type="string" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="site_url" type="string" indexed="true" stored="true" multiValued="false" required="false" />
+    <field name="data_type" type="string" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="record_id" type="string" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="creator" type="string" indexed="true" stored="true" multiValued="true" required="false" />
     <field name="function" type="string" indexed="true" stored="true" multiValued="true" required="false" />
