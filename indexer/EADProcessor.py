@@ -14,14 +14,15 @@ class EADProcessor:
         # the source URL for contructing the id
         self.source = source
 
-        # the output folder for the data
+        # where to stash the output
         self.output_folder = output_folder
+        if not os.path.isdir(self.output_folder):
+            os.makedirs(self.output_folder)
 
         # the transform to load and use
         transform = None
-        for t in transforms:
-            if os.path.exists(os.path.join(t, 'ead.xsl')):
-                transform = os.path.join(t, 'ead.xsl')
+        if os.path.exists(os.path.join(transforms, 'ead.xsl')):
+            transform = os.path.join(transforms, 'ead.xsl')
 
         if transform is not None:
             xsl = etree.parse(transform)
@@ -49,7 +50,7 @@ class EADProcessor:
                 doc = self.xsl(item)
 
                 eid = etree.Element('field', name='id')
-                eid.text = "%s/%s-%s" % (self.source, series_id, item_id)
+                eid.text = "%s/%s#%s" % (self.source, series_id, item_id)
 
                 # add the site metadata into the record
                 site_code = etree.Element('field', name='site_code')
@@ -59,7 +60,7 @@ class EADProcessor:
                 site_name.text = metadata['site_name']
 
                 site_url = etree.Element('field', name='site_url')
-                site_url.text = self.metadata['site_url']
+                site_url.text = metadata['site_url']
 
                 data_type = etree.Element('field', name='data_type')
                 data_type.text = 'HDMS'
@@ -72,7 +73,7 @@ class EADProcessor:
                 d.append(data_type)
                         
                 try:
-                    uniqueid = eid.text.split('://')[1]
+                    uniqueid = eid.text.split('://')[1].replace('#', '-')
                     output_file = os.path.join(self.output_folder, uniqueid.replace('/', '-'))
                     log.debug("Writing output to: %s" % output_file)
                     with open(output_file, 'w') as f:
