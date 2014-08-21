@@ -28,7 +28,7 @@ class EADProcessor:
             xsl.xinclude()
             self.xsl = etree.XSLT(xsl)
 
-    def run(self):
+    def run(self, metadata):
         if not os.path.exists(self.datafile):
             log.error("Couldn't find file: %s" % self.datafile)
             return
@@ -51,9 +51,25 @@ class EADProcessor:
                 eid = etree.Element('field', name='id')
                 eid.text = "%s/%s-%s" % (self.source, series_id, item_id)
 
+                # add the site metadata into the record
+                site_code = etree.Element('field', name='site_code')
+                site_code.text = metadata['site_code']
+
+                site_name = etree.Element('field', name='site_name')
+                site_name.text = metadata['site_name']
+
+                site_url = etree.Element('field', name='site_url')
+                site_url.text = self.metadata['site_url']
+
+                data_type = etree.Element('field', name='data_type')
+                data_type.text = 'HDMS'
 
                 d = doc.xpath('/add/doc')[0]
                 d.append(eid)
+                d.append(site_code)
+                d.append(site_url)
+                d.append(site_name)
+                d.append(data_type)
                         
                 try:
                     uniqueid = eid.text.split('://')[1]

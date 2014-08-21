@@ -131,6 +131,10 @@ class Transformer:
         site_url.text = self.metadata['site_url']
         tmp.append(site_url)
 
+        data_type = etree.Element('field', name='data_type')
+        data_type.text = 'OHRM'
+        tmp.append(data_type)
+
         # add in the faux start and end date as required
         #  but only if the record has a date from or to defined - for those
         #  records where it'snot defined; we skip this step so we don't
