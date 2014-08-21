@@ -125,7 +125,7 @@ class Indexer:
             p = Poster(input_folder, solr_service, self.site)
             p.run()
 
-    def process_hdms_data(self, transforms, output_folder):
+    def process_hdms_data(self):
         ### EXTRACT THE FINDING AID ITEMS
         ead_datafile = self.hdms_cfg.get('hdms', 'input') if (self.hdms_cfg.has_section('hdms') and self.hdms_cfg.has_option('hdms', 'input')) else None
         source = self.hdms_cfg.get('hdms', 'source') if (self.hdms_cfg.has_section('hdms') and self.hdms_cfg.has_option('hdms', 'source')) else None
