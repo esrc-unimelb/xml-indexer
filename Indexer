@@ -23,6 +23,10 @@ if __name__ == "__main__":
         help='Only perform the crawl and transform stages.')
     parser.add_argument('--post', dest='post', action='store_true', default=None,
         help='Only perform the post stage (includes index clean).')
+
+    parser.add_argument('--process-hdms-data', dest='ead_data', action='store_true', default=None,
+        help='Process a HDMS EAD data file.')
+
     parser.add_argument('--solr', dest='solr', default=None,
         help='Override the solr defined in the config file.')
 
@@ -67,3 +71,6 @@ if __name__ == "__main__":
         ### POSTER
         indexer.post(args.solr)
     
+    if args.ead_data is not None:
+        ### EAD Processor
+        indexer.process_hdms_data()
