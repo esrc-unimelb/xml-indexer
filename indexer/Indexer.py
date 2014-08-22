@@ -81,7 +81,7 @@ class Indexer:
 
     def transform(self, content, document=None, doctype=None):
         ### TRANSFORM THE CONTENT MARKED FOR INGESTION INTO SOLR
-        output_folder = os.path.join(self.site_cache, 'post')
+        output_folder = os.path.join(self.site_cache, 'ohrm')
         transforms = self.ohrm_cfg.get('transform', 'transforms') if (self.ohrm_cfg.has_section('transform') and self.ohrm_cfg.has_option('transform', 'transforms')) else None
         solr_service = self.ohrm_cfg.get('post', 'index') if (self.ohrm_cfg.has_section('post') and self.ohrm_cfg.has_option('post', 'index')) else None
 
@@ -112,6 +112,21 @@ class Indexer:
             else:
                 t.run()
 
+    def process_hdms_data(self):
+        ### EXTRACT THE FINDING AID ITEMS
+        ead_datafile = self.hdms_cfg.get('hdms', 'input') if (self.hdms_cfg.has_section('hdms') and self.hdms_cfg.has_option('hdms', 'input')) else None
+        source = self.hdms_cfg.get('hdms', 'source') if (self.hdms_cfg.has_section('hdms') and self.hdms_cfg.has_option('hdms', 'source')) else None
+        output_folder = os.path.join(self.site_cache, 'hdms')
+
+        metadata = {
+            'site_code': self.site,
+            'site_name': self.hdms_cfg.get('meta', 'site_name') if (self.hdms_cfg.has_section('meta') and self.hdms_cfg.has_option('meta', 'site_name')) else None,
+            'site_url': self.hdms_cfg.get('meta', 'site_url') if (self.hdms_cfg.has_section('meta') and self.hdms_cfg.has_option('meta', 'site_url')) else None
+        }
+        if ead_datafile is not None:
+            ead = EADProcessor(ead_datafile, self.default_transforms, source, output_folder)
+            ead.run(metadata)
+
     def post(self, solr_service):
         ### POST THE SOLR DOCUMENTS TO THE INDEX
         input_folder = os.path.join(self.site_cache, 'post')
@@ -125,17 +140,4 @@ class Indexer:
             p = Poster(input_folder, solr_service, self.site)
             p.run()
 
-    def process_hdms_data(self):
-        ### EXTRACT THE FINDING AID ITEMS
-        ead_datafile = self.hdms_cfg.get('hdms', 'input') if (self.hdms_cfg.has_section('hdms') and self.hdms_cfg.has_option('hdms', 'input')) else None
-        source = self.hdms_cfg.get('hdms', 'source') if (self.hdms_cfg.has_section('hdms') and self.hdms_cfg.has_option('hdms', 'source')) else None
-        output_folder = os.path.join(self.site_cache, 'post')
 
-        metadata = {
-            'site_code': self.site,
-            'site_name': self.hdms_cfg.get('meta', 'site_name') if (self.hdms_cfg.has_section('meta') and self.hdms_cfg.has_option('meta', 'site_name')) else None,
-            'site_url': self.hdms_cfg.get('meta', 'site_url') if (self.hdms_cfg.has_section('meta') and self.hdms_cfg.has_option('meta', 'site_url')) else None
-        }
-        if ead_datafile is not None:
-            ead = EADProcessor(ead_datafile, self.default_transforms, source, output_folder)
-            ead.run(metadata)
