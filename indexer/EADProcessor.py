@@ -87,7 +87,24 @@ class EADProcessor:
                 # strip empty elements - dates in particular cause
                 #  solr to barf horribly...
                 elements().strip_empty_elements(d)
-                        
+
+                # add in the faux start and end date as required
+                #  but only if the record has a date from or to defined - for those
+                #  records where it'snot defined; we skip this step so we don't
+                #  get dodgy results
+                if d.xpath('/add/doc/field[@name="date_from"]') or d.xpath('/add/doc/field[@name="date_to"]'):
+                    df = etree.Element('field', name='exist_from')
+                    if d.xpath('/add/doc/field[@name="date_from"]'):
+                        df.text = d.xpath('/add/doc/field[@name="date_from"]')[0].text
+                        d.append(df)
+
+                    dt = etree.Element('field', name='exist_to')
+                    if d.xpath('/add/doc/field[@name="date_to"]'):
+                        dt.text = d.xpath('/add/doc/field[@name="date_to"]')[0].text
+                    else:
+                        dt.text = "%sT00:00:00Z" % self.date_upper_bound
+                    d.append(dt)
+                            
                 try:
                     uniqueid = eid.text.split('://')[1].replace('#', '-')
                     output_file = os.path.join(self.output_folder, uniqueid.replace('/', '-'))
