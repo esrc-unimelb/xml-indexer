@@ -30,6 +30,7 @@ class Poster:
             idx.clean()
             idx.commit()
 
+        total = 0
         for (dirpath, dirnames, filenames) in os.walk(self.input_folder):
             for f in filenames:
                 file_handle = os.path.join(dirpath, f)
@@ -37,7 +38,7 @@ class Poster:
                 doc = etree.parse(file_handle)
                 idx.submit(etree.tostring(doc), file_handle)
 
-            count = len(filenames)
+            total += len(filenames)
 
         idx.commit()
         idx.optimize()
@@ -46,5 +47,5 @@ class Poster:
         #  log an error if not the same
         url ="%s/select?q=site_code:%s&rows=0&wt=json" % (self.solr_service, self.site)
         data = json.loads(requests.get(url).text)
-        if count != data['response']['numFound']:
-            log.error("Number of files in index doesn't match local count. index: %s local: %s" % (data['response']['numFound'], count))
+        if total != data['response']['numFound']:
+            log.error("Number of files in index doesn't match local count. index: %s local: %s" % (data['response']['numFound'], total))

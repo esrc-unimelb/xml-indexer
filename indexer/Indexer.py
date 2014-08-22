@@ -130,6 +130,7 @@ class Indexer:
     def post(self, solr_service, clean_first):
         ### POST THE SOLR DOCUMENTS TO THE INDEX
         #input_folder = os.path.join(self.site_cache, 'post')
+        input_folder = self.site_cache
         if solr_service is None:
             solr_service = self.ohrm_cfg.get('post', 'index') if (self.ohrm_cfg.has_section('post') and self.ohrm_cfg.has_option('post', 'index')) else None
 
