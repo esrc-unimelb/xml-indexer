@@ -67,10 +67,11 @@ if __name__ == "__main__":
         ###  process a single file; this is usually testing
         indexer.transform(content)
 
+    if args.ead_data is not None:
+        ### EAD Processor
+        indexer.process_hdms_data()
+
     if args.post is not None:
         ### POSTER
         indexer.post(args.solr)
     
-    if args.ead_data is not None:
-        ### EAD Processor
-        indexer.process_hdms_data()

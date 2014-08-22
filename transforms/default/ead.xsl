@@ -17,6 +17,7 @@
 -->
 <xsl:stylesheet 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+    xmlns:str="http://exslt.org/strings"
     version="1.0">
 
     <!-- <xsl:import href="../lib/common.xsl" /> -->
@@ -28,6 +29,8 @@
                 <field name="type">Finding Aid Item</field>
                 <field name='name'><xsl:value-of select='/c02/did/unittitle' /></field>
                 <field name='text'><xsl:value-of select='normalize-space(/c02/scopecontent)' /></field>
+                <field name="date_from"><xsl:value-of select="str:split(/c02/did/unitdate/@normal, '/')" /></field>
+                <field name="date_to"><xsl:value-of select="str:split(/c02/did/unitdate/@normal, '/')[1]" /></field>
             </doc>
         </add>
     </xsl:template>

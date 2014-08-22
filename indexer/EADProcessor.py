@@ -4,6 +4,9 @@ import logging
 import sys
 from lxml import etree
 
+from clean.empty import elements
+from helpers import *
+
 log = logging.getLogger('EAD PROCESSOR')
 
 class EADProcessor:
@@ -71,6 +74,19 @@ class EADProcessor:
                 d.append(site_url)
                 d.append(site_name)
                 d.append(data_type)
+
+                # clean the date entries for solr
+                clean_dates(d)
+
+                try:
+                    # clean the fields with markup
+                    clean_markup(d)
+                except ValueError:
+                    log.error("I think there's something wrong with the transformed result of: %s" % doc[0])
+
+                # strip empty elements - dates in particular cause
+                #  solr to barf horribly...
+                elements().strip_empty_elements(d)
                         
                 try:
                     uniqueid = eid.text.split('://')[1].replace('#', '-')
