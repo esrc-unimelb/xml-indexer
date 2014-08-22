@@ -24,6 +24,9 @@ if __name__ == "__main__":
     parser.add_argument('--post', dest='post', action='store_true', default=None,
         help='Only perform the post stage (includes index clean).')
 
+    parser.add_argument('--clean', dest='clean', action='store_true', default=None,
+        help="Wipe this site's data from the index first or not?")
+
     parser.add_argument('--process-hdms-data', dest='ead_data', action='store_true', default=None,
         help='Process a HDMS EAD data file.')
 
@@ -73,5 +76,5 @@ if __name__ == "__main__":
 
     if args.post is not None:
         ### POSTER
-        indexer.post(args.solr)
+        indexer.post(args.solr, args.clean)
     

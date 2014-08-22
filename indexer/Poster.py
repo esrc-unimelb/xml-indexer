@@ -21,13 +21,14 @@ class Poster:
 
         log.info('Poster initialised')
         
-    def run(self):
+    def run(self, clean_first):
 
         idx = Index(self.solr_service, self.site, "site_code:%s" % self.site)
 
-        # wipe the old data from the index before rebuilding it
-        idx.clean()
-        idx.commit()
+        # if clean_first is True then wipe the index
+        if clean_first:
+            idx.clean()
+            idx.commit()
 
         for (dirpath, dirnames, filenames) in os.walk(self.input_folder):
             for f in filenames:

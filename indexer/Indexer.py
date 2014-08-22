@@ -127,9 +127,9 @@ class Indexer:
             ead = EADProcessor(ead_datafile, self.default_transforms, source, output_folder)
             ead.run(metadata)
 
-    def post(self, solr_service):
+    def post(self, solr_service, clean_first):
         ### POST THE SOLR DOCUMENTS TO THE INDEX
-        input_folder = os.path.join(self.site_cache, 'post')
+        #input_folder = os.path.join(self.site_cache, 'post')
         if solr_service is None:
             solr_service = self.ohrm_cfg.get('post', 'index') if (self.ohrm_cfg.has_section('post') and self.ohrm_cfg.has_option('post', 'index')) else None
 
@@ -138,6 +138,6 @@ class Indexer:
 
         with Timer() as t:
             p = Poster(input_folder, solr_service, self.site)
-            p.run()
+            p.run(clean_first)
 
 
