@@ -35,8 +35,8 @@
                 <field name="source"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='doreference']" /></field>
                 <field name="source_link"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='doexternalurl']/a/@href" /></field>
                 <field name="rights"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='dorights']" /></field>
-                <field name="thumbnail"><xsl:call-template name="thumbnail" /></field>
-                <!--<field name="large"><xsl:call-template name="large_image" /></field>-->
+                <xsl:call-template name="thumbnail" />
+                <xsl:call-template name="fullsize" />
                 <field name="state_long">Australian Capital Territory</field>
                 <field name="state_short">ACT</field>
             </doc>

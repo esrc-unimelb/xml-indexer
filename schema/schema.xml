@@ -162,6 +162,7 @@
     <field name="source_link" type="string" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="rights" type="string" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="thumbnail" type="string" indexed="true" stored="true" multiValued="false" required="false" />
+    <field name="fullsize" type="string" indexed="true" stored="true" multiValued="false" required="false" />
 
     <!-- Publication specific -->
     <field name="author" type="string" indexed="true" stored="true" multiValued="false" required="false" />

@@ -49,19 +49,22 @@
     <xsl:template name="thumbnail">
         <xsl:variable name="docpath" select="str:split(//meta[@name='DC.Identifier']/@content, '/objects')" />
         <xsl:variable name="thumbpath" select="str:split(//img[@id='dothumb']/@src, '../objects')" />
-        <xsl:value-of select="$docpath" />
-        <xsl:text>/objects</xsl:text>
-        <xsl:value-of select="$thumbpath" />
+        <field name="thumbnail">
+            <xsl:value-of select="$docpath" />
+            <xsl:text>/objects</xsl:text>
+            <xsl:value-of select="$thumbpath" />
+        </field>
     </xsl:template>
 
     <!-- Extract the dobject large image -->
-    <xsl:template name="large_image">
+    <xsl:template name="fullsize">
         <xsl:variable name="docpath" select="str:split(//meta[@name='DC.Identifier']/@content, '/objects')" />
-        <xsl:variable name="im" select="str:split(//div[@class='entity-image']/a/@href, '../image_viewer.htm?objects')" />
-        <xsl:variable name="largepath" select="str:split($im, ',')" />
-        <xsl:value-of select="$docpath" />
-        <xsl:text>/objects</xsl:text>
-        <xsl:value-of select="$largepath" />
+        <xsl:variable name="largepath" select="str:split(//img[@id='dothumb']/../../a/@href, '../objects')" />
+        <field name="fullsize">
+            <xsl:value-of select="$docpath" />
+            <xsl:text>/objects</xsl:text>
+            <xsl:value-of select="$largepath" />
+        </field>
     </xsl:template>
 
     <!-- Extract the entity functions -->
