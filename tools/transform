@@ -41,7 +41,8 @@ if __name__ == "__main__":
     log.debug("Indexing: %s" % args.site)
 
     i = Indexer(args.site, args.config)
-    c = Crawler(i.cfg)
+    print i.ohrm_cfg
+    c = Crawler(i.ohrm_cfg)
     tree = html.parse(args.document)
     document = c.which_file(tree, args.document)
     i.transform([], document=document[0], doctype=document[1])
