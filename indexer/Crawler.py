@@ -136,7 +136,7 @@ class Crawler:
                     try:
                         etype = etype[0]
                     except IndexError:
-                        log.error("Bad XML datafile LocalControl seems to be missing. Using the HTML content for: %s" % file_handle)
+                        log.error("Bad XML datafile. LocalControl seems to be missing. Using the HTML content for: %s" % file_handle)
                         return (file_handle, 'html')
 
                     if etype.text in self.exclude_types:
