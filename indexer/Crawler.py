@@ -127,14 +127,18 @@ class Crawler:
                     try:
                         tree = etree.parse(source)
                     except etree.XMLSyntaxError:
-                        log.warn("Broken XML datafile.")
-                        log.debug("Using the HTML content for: %s" % file_handle)
+                        log.error("Broken XML datafile. Using the HTML content for: %s" % file_handle)
                         return (file_handle, 'html')
 
                     # ditch it if it's a type which is to be excluded
                     etype = tree.xpath("/n:eac-cpf/n:control/n:localControl[@localType='typeOfEntity']/n:term",
                            namespaces={'n': 'urn:isbn:1-931666-33-4' })
-                    etype = etype[0]
+                    try:
+                        etype = etype[0]
+                    except IndexError:
+                        log.error("Broken XML datafile. Using the HTML content for: %s" % file_handle)
+                        return (file_handle, 'html')
+
                     if etype.text in self.exclude_types:
                         log.info("Excluding: %s, (type: %s)" % (file_handle, etype.text))
                         return None
