@@ -47,30 +47,54 @@
 
     <!-- Extract the dobject thumbnail -->
     <xsl:template name="thumbnail">
-        <xsl:variable name="docpath" select="str:split(//meta[@name='DC.Identifier']/@content, '/objects')" />
-        <xsl:variable name="thumbpath" select="str:split(//img[@id='dothumb']/@src, '../objects')" />
+        <xsl:variable name="thumbImageHref" select="str:tokenize(//img[@id='dothumb']/@src, '/')" />
         <field name="thumbnail">
-            <xsl:value-of select="$docpath" />
-            <xsl:text>/objects</xsl:text>
-            <xsl:value-of select="$thumbpath" />
+            <xsl:choose>
+                <!-- does the path begin with http? use as is -->
+                <xsl:when test="$thumbImageHref[1] = 'http:'">
+                    <xsl:value-of select="//img[@id='dothumb']/../../a/@href" />
+                </xsl:when>
+                <!-- does the path begin with https? use as is -->
+                <xsl:when test="$thumbImageHref[1] = 'https:'">
+                    <xsl:value-of select="//img[@id='dothumb']/../../a/@href" />
+                </xsl:when>
+                <!-- does the path begin with ../? chomp up to objects/ and reconstruct with DC.Identifier -->
+                <xsl:when test="$thumbImageHref[1] = '..'">
+                    <xsl:choose>
+                        <xsl:when test="$thumbImageHref[2] = 'objects'">
+                            <xsl:variable name="docpath" select="str:split(//meta[@name='DC.Identifier']/@content, '/objects')" />
+                            <xsl:variable name="thumbpath" select="str:split(//img[@id='dothumb']/@src, 'objects')[2]" />
+                            <xsl:value-of select="$docpath" />
+                            <xsl:text>/objects</xsl:text>
+                            <xsl:value-of select="$thumbpath" />
+                        </xsl:when>
+                        <xsl:when test="$thumbImageHref[2] = 'site'">
+                            <xsl:variable name="docpath" select="str:split(//meta[@name='DC.Identifier']/@content, '/objects')" />
+                            <xsl:variable name="thumbpath" select="str:split(//img[@id='dothumb']/@src, 'site')[2]" />
+                            <xsl:value-of select="$docpath" />
+                            <xsl:text>/site</xsl:text>
+                            <xsl:value-of select="$thumbpath" />
+                        </xsl:when>
+                    </xsl:choose>
+                </xsl:when>
+            </xsl:choose>
         </field>
     </xsl:template>
 
     <!-- Extract the dobject large image -->
     <xsl:template name="fullsize">
-
         <xsl:variable name="largeImageHref" select="str:tokenize(//img[@id='dothumb']/../../a/@href, '/')" />
-        <!-- does the path begin with http (which includes https)? use as is -->
-        <!-- does the path begin with ../? chomp up to objects/ and reconstruct with DC.Identifier -->
-
         <field name="fullsize">
             <xsl:choose>
+                <!-- does the path begin with http? use as is -->
                 <xsl:when test="$largeImageHref[1] = 'http:'">
                     <xsl:value-of select="//img[@id='dothumb']/../../a/@href" />
                 </xsl:when>
+                <!-- does the path begin with https? use as is -->
                 <xsl:when test="$largeImageHref[1] = 'https:'">
                     <xsl:value-of select="//img[@id='dothumb']/../../a/@href" />
                 </xsl:when>
+                <!-- does the path begin with ../? chomp up to objects/ and reconstruct with DC.Identifier -->
                 <xsl:when test="$largeImageHref[1] = '..'">
                     <xsl:variable name="docpath" select="str:split(//meta[@name='DC.Identifier']/@content, '/objects')" />
                     <xsl:variable name="largepath" select="str:split(//img[@id='dothumb']/../../a/@href, 'objects/')[2]" />
