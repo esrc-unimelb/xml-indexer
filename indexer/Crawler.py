@@ -135,44 +135,42 @@ class Crawler:
                            namespaces={'n': 'urn:isbn:1-931666-33-4' })
                     try:
                         etype = etype[0]
+                        if etype.text in self.exclude_types:
+                            log.info("Excluding: %s, (type: %s)" % (file_handle, etype.text))
+                            return None
                     except IndexError:
-                        log.error("Bad XML datafile. LocalControl seems to be missing. Using the HTML content for: %s" % file_handle)
-                        return (file_handle, 'html')
+                        log.error("LocalControl seems to be missing. Can't determine if this entity is in the excludes list (by type): %s" % file_handle)
 
-                    if etype.text in self.exclude_types:
-                        log.info("Excluding: %s, (type: %s)" % (file_handle, etype.text))
-                        return None
-                    else:
-                        log.debug("Using the XML content for: %s" % file_handle)
+                    log.debug("Using the XML content for: %s" % file_handle)
 
-                        # now extract date_from and date_to from the dataset
-                        #  so we can determine the bounds of the dataset
-                        date_from = tree.xpath("/n:eac-cpf/n:cpfDescription/n:description/n:existDates/n:dateRange/n:fromDate/@standardDate",
-                            namespaces={'n': 'urn:isbn:1-931666-33-4' })
-                        date_to = tree.xpath("/n:eac-cpf/n:cpfDescription/n:description/n:existDates/n:dateRange/n:toDate/@standardDate",
-                            namespaces={'n': 'urn:isbn:1-931666-33-4' })
+                    # now extract date_from and date_to from the dataset
+                    #  so we can determine the bounds of the dataset
+                    date_from = tree.xpath("/n:eac-cpf/n:cpfDescription/n:description/n:existDates/n:dateRange/n:fromDate/@standardDate",
+                        namespaces={'n': 'urn:isbn:1-931666-33-4' })
+                    date_to = tree.xpath("/n:eac-cpf/n:cpfDescription/n:description/n:existDates/n:dateRange/n:toDate/@standardDate",
+                        namespaces={'n': 'urn:isbn:1-931666-33-4' })
 
-                        if (date_from):
-                            dn = datetime.strptime(date_from[0], '%Y-%m-%d')
-                            try:
-                                do = datetime.strptime(self.date_from, '%Y-%m-%d')
+                    if (date_from):
+                        dn = datetime.strptime(date_from[0], '%Y-%m-%d')
+                        try:
+                            do = datetime.strptime(self.date_from, '%Y-%m-%d')
 
-                                if dn < do:
-                                    self.date_from = dn.strftime('%Y-%m-%d')
-                            except:
-                                self.date_from = date_from[0]
+                            if dn < do:
+                                self.date_from = dn.strftime('%Y-%m-%d')
+                        except:
+                            self.date_from = date_from[0]
 
-                        if (date_to):
-                            dt = datetime.strptime(date_to[0], '%Y-%m-%d')
-                            try:
-                                do = datetime.strptime(self.date_to, '%Y-%m-%d')
-                                if dt > do:
-                                    self.date_to = dt.strftime('%Y-%m-%d')
-                            except:
-                                self.date_to = date_to[0]
-                            
+                    if (date_to):
+                        dt = datetime.strptime(date_to[0], '%Y-%m-%d')
+                        try:
+                            do = datetime.strptime(self.date_to, '%Y-%m-%d')
+                            if dt > do:
+                                self.date_to = dt.strftime('%Y-%m-%d')
+                        except:
+                            self.date_to = date_to[0]
+                        
 
-                        return (source, 'xml')
+                    return (source, 'xml')
                 else:
                     log.warn("XML datafile referenced in %s but I couldn't retrieve it." % file_handle)
                     log.debug("Using the HTML content for: %s" % file_handle)
