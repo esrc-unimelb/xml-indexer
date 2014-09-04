@@ -10,12 +10,15 @@ from helpers import *
 log = logging.getLogger('EAD PROCESSOR')
 
 class EADProcessor:
-    def __init__(self, datafile, transforms, source, output_folder):
+    def __init__(self, datafile, transforms, source, images, output_folder):
         # the HDMS datafile
         self.datafile = datafile
 
         # the source URL for contructing the id
         self.source = source
+
+        # the path to the images - optional
+        self.images = images
 
         # where to stash the output
         self.output_folder = output_folder
@@ -75,6 +78,17 @@ class EADProcessor:
                 d.append(site_name)
                 d.append(data_type)
 
+                # process any item images - if there any
+                if self.images is not None:
+                    try:
+                        images = [ f for f in os.listdir(os.path.join(self.images, item_id, 'large')) ]
+                        for f in sorted(images):
+                            image = etree.Element('field', name='image')
+                            image.text = f
+                            d.append(image)
+                    except OSError:
+                        pass
+
                 # clean the date entries for solr
                 clean_dates(d)
 
@@ -82,7 +96,7 @@ class EADProcessor:
                     # clean the fields with markup
                     clean_markup(d)
                 except ValueError:
-                    log.error("I think there's something wrong with the transformed result of: %s" % doc[0])
+                    log.error("I think there's something wrong with the transformed result of: %s" % item_id)
 
                 # strip empty elements - dates in particular cause
                 #  solr to barf horribly...

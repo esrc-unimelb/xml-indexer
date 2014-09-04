@@ -115,6 +115,7 @@ class Indexer:
     def process_hdms_data(self):
         ### EXTRACT THE FINDING AID ITEMS
         ead_datafile = self.hdms_cfg.get('hdms', 'input') if (self.hdms_cfg.has_section('hdms') and self.hdms_cfg.has_option('hdms', 'input')) else None
+        images = self.hdms_cfg.get('hdms', 'images') if (self.hdms_cfg.has_section('hdms') and self.hdms_cfg.has_option('hdms', 'images')) else None
         source = self.hdms_cfg.get('hdms', 'source') if (self.hdms_cfg.has_section('hdms') and self.hdms_cfg.has_option('hdms', 'source')) else None
         output_folder = os.path.join(self.site_cache, 'hdms')
 
@@ -124,7 +125,7 @@ class Indexer:
             'site_url': self.hdms_cfg.get('meta', 'site_url') if (self.hdms_cfg.has_section('meta') and self.hdms_cfg.has_option('meta', 'site_url')) else None
         }
         if ead_datafile is not None:
-            ead = EADProcessor(ead_datafile, self.default_transforms, source, output_folder)
+            ead = EADProcessor(ead_datafile, self.default_transforms, source, images, output_folder)
             ead.run(metadata)
 
     def post(self, solr_service, clean_first):
@@ -133,6 +134,8 @@ class Indexer:
         input_folder = self.site_cache
         if solr_service is None:
             solr_service = self.ohrm_cfg.get('post', 'index') if (self.ohrm_cfg.has_section('post') and self.ohrm_cfg.has_option('post', 'index')) else None
+            if solr_service == None:
+                solr_service = self.hdms_cfg.get('hdms', 'index') if (self.ohrm_cfg.has_section('hdms') and self.ohrm_cfg.has_option('hdms', 'index')) else None
 
         log.debug("Content folder to be posted : %s" % input_folder)
         log.debug("Solr service: %s" % solr_service)
