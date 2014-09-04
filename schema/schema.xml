@@ -152,6 +152,9 @@
     <field name="exist_from" type="date" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="exist_to" type="date" indexed="true" stored="true" multiValued="false" required="false" />
 
+    <!-- HDMS specific -->
+    <field name="image" type="string" indexed="true" stored="true" multiValued="true" required="false" />
+
     <!-- Archival resource specific -->
     <field name="repository" type="string" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="repository_link" type="string" indexed="true" stored="true" multiValued="false" required="false" />
