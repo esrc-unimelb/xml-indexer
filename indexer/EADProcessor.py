@@ -71,19 +71,43 @@ class EADProcessor:
                 data_type = etree.Element('field', name='data_type')
                 data_type.text = 'HDMS'
 
+                sid = etree.Element('field', name='series_id')
+                sid.text = series_id
+
+                iid = etree.Element('field', name='item_id')
+                iid.text = item_id
+
                 d = doc.xpath('/add/doc')[0]
                 d.append(eid)
                 d.append(site_code)
                 d.append(site_url)
                 d.append(site_name)
                 d.append(data_type)
+                d.append(sid)
+                d.append(iid)
 
                 # process any item images - if there any
                 if self.images is not None:
+                    # stash the image path
+                    image_path = etree.Element('field', name='image_path')
+                    image_path.text = self.images
+                    d.append(image_path)
+
+                    # generate the list of small images
+                    try:
+                        images = [ f for f in os.listdir(os.path.join(self.images, item_id, 'small')) ]
+                        for f in sorted(images):
+                            image = etree.Element('field', name='small_images')
+                            image.text = f
+                            d.append(image)
+                    except OSError:
+                        pass
+
+                    # generate the list of large images
                     try:
                         images = [ f for f in os.listdir(os.path.join(self.images, item_id, 'large')) ]
                         for f in sorted(images):
-                            image = etree.Element('field', name='image')
+                            image = etree.Element('field', name='large_images')
                             image.text = f
                             d.append(image)
                     except OSError:
