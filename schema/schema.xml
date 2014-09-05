@@ -153,7 +153,11 @@
     <field name="exist_to" type="date" indexed="true" stored="true" multiValued="false" required="false" />
 
     <!-- HDMS specific -->
-    <field name="image" type="string" indexed="true" stored="true" multiValued="true" required="false" />
+    <field name="series_id" type="string" indexed="true" stored="true" multiValued="false" required="false" />
+    <field name="item_id" type="string" indexed="true" stored="true" multiValued="false" required="false" />
+    <field name="image_path" type="string" indexed="true" stored="true" multiValued="false" required="false" />
+    <field name="small_images" type="string" indexed="true" stored="true" multiValued="true" required="false" />
+    <field name="large_images" type="string" indexed="true" stored="true" multiValued="true" required="false" />
 
     <!-- Archival resource specific -->
     <field name="repository" type="string" indexed="true" stored="true" multiValued="false" required="false" />
