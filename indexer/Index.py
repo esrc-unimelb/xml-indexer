@@ -38,6 +38,7 @@ class Index:
         self.update_url = "%s/%s" % (update_url, 'update?')
         self.site = site
         self.match = match
+        log.debug("Site: %s, Index: %s, Match: %s" % (self.site, self.update_url, self.match))
         self.headers = { 'Content-type': 'text/xml; charset=utf-8' }
 
     def commit(self):
