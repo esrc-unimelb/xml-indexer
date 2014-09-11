@@ -122,7 +122,8 @@ class Indexer:
         metadata = {
             'site_code': self.site,
             'site_name': self.hdms_cfg.get('meta', 'site_name') if (self.hdms_cfg.has_section('meta') and self.hdms_cfg.has_option('meta', 'site_name')) else None,
-            'site_url': self.hdms_cfg.get('meta', 'site_url') if (self.hdms_cfg.has_section('meta') and self.hdms_cfg.has_option('meta', 'site_url')) else None
+            'site_url': self.hdms_cfg.get('meta', 'site_url') if (self.hdms_cfg.has_section('meta') and self.hdms_cfg.has_option('meta', 'site_url')) else None,
+            'source': self.hdms_cfg.get('hdms', 'source') if (self.hdms_cfg.has_section('hdms') and self.hdms_cfg.has_option('hdms', 'source')) else None
         }
         if ead_datafile is not None:
             ead = EADProcessor(ead_datafile, self.default_transforms, source, images, output_folder)
