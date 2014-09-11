@@ -90,7 +90,7 @@ class EADProcessor:
                 if self.images is not None:
                     # stash the image path
                     image_path = etree.Element('field', name='image_path')
-                    image_path.text = metadata['image_base']
+                    image_path.text = self.images
                     d.append(image_path)
 
                     # generate the list of small images
