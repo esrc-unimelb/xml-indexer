@@ -31,6 +31,10 @@
                 <field name='text'><xsl:value-of select='normalize-space(/c02/scopecontent)' /></field>
                 <field name="date_from"><xsl:value-of select="str:split(/c02/did/unitdate/@normal, '/')" /></field>
                 <field name="date_to"><xsl:value-of select="str:split(/c02/did/unitdate/@normal, '/')[1]" /></field>
+                <field name='name'><xsl:value-of select='/c03/did/unittitle' /></field>
+                <field name='text'><xsl:value-of select='normalize-space(/c03/scopecontent)' /></field>
+                <field name="date_from"><xsl:value-of select="str:split(/c03/did/unitdate/@normal, '/')" /></field>
+                <field name="date_to"><xsl:value-of select="str:split(/c03/did/unitdate/@normal, '/')[1]" /></field>
             </doc>
         </add>
     </xsl:template>
