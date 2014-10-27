@@ -7,7 +7,7 @@ from lxml import etree
 from clean.empty import elements
 from helpers import *
 
-log = logging.getLogger('EAD PROCESSOR')
+log = logging.getLogger(__name__)
 
 class EADProcessor:
     def __init__(self, datafile, transforms, source, images, output_folder):

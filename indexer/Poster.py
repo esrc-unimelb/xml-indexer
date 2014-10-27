@@ -1,11 +1,12 @@
 
-import logging
 import os
 import requests
 import json
 from Index import Index
 from lxml import etree
-log = logging.getLogger('POSTER')
+
+import logging
+log = logging.getLogger(__name__)
 
 class Poster:
 

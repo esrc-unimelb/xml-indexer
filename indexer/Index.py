@@ -26,7 +26,7 @@ import logging
 import requests
 
 # get the logger
-log = logging.getLogger('INDEX')
+log = logging.getLogger(__name__)
 
 # quieten the requests library
 requests_log = logging.getLogger("requests")

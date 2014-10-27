@@ -1,6 +1,5 @@
 
 import sys
-import logging
 import os.path
 import shutil
 from lxml import etree, html
@@ -10,7 +9,8 @@ from datetime import datetime, timedelta
 from clean.empty import elements
 from helpers import *
 
-log = logging.getLogger('TRANSFORMER')
+import logging
+log = logging.getLogger(__name__)
 
 class Transformer:
 
@@ -60,6 +60,18 @@ class Transformer:
 
         for f in self.files_list:
             self.process_document(f)
+
+    def add_field(self, doc, field_name, field_value):
+        tmp = doc.xpath('/add/doc')[0]
+
+        # add the record and item metadata
+        b = etree.Element('field', name=field_name)
+        b.text = field_value.decode('utf-8')
+        tmp.append(b)
+
+        add = etree.Element('add')
+        add.append(tmp)
+        return add
 
     def process_document(self, doc, debug=False):
         """The code to actually process the document
@@ -116,41 +128,33 @@ class Transformer:
         elements().strip_empty_elements(d)
 
         # add in the metadata the indexer users
-        tmp = d.xpath('/add/doc')[0]
+        d = d.xpath('/add/doc')[0]
 
         # add the site metadata into the record
-        site_code = etree.Element('field', name='site_code')
-        site_code.text = self.metadata['site_code']
-        tmp.append(site_code)
-
-        site_name = etree.Element('field', name='site_name')
-        site_name.text = self.metadata['site_name']
-        tmp.append(site_name)
-
-        site_url = etree.Element('field', name='site_url')
-        site_url.text = self.metadata['site_url']
-        tmp.append(site_url)
-
-        data_type = etree.Element('field', name='data_type')
-        data_type.text = 'OHRM'
-        tmp.append(data_type)
+        d = self.add_field(d, 'site_code', self.metadata['site_code'])
+        d = self.add_field(d, 'site_name', self.metadata['site_name'])
+        d = self.add_field(d, 'site_url', self.metadata['site_url'])
+        d = self.add_field(d, 'data_type', 'OHRM')
 
         # add in the faux start and end date as required
         #  but only if the record has a date from or to defined - for those
         #  records where it'snot defined; we skip this step so we don't
         #  get dodgy results
         if d.xpath('/add/doc/field[@name="date_from"]') or d.xpath('/add/doc/field[@name="date_to"]'):
-            df = etree.Element('field', name='exist_from')
             if d.xpath('/add/doc/field[@name="date_from"]'):
-                df.text = d.xpath('/add/doc/field[@name="date_from"]')[0].text
-                tmp.append(df)
+                d = self.add_field(d, 'exist_from', d.xpath('/add/doc/field[@name="date_from"]')[0].text)
 
-            dt = etree.Element('field', name='exist_to')
             if d.xpath('/add/doc/field[@name="date_to"]'):
-                dt.text = d.xpath('/add/doc/field[@name="date_to"]')[0].text
-            else:
-                dt.text = "%sT00:00:00Z" % self.date_upper_bound
-            tmp.append(dt)
+                d = self.add_field(d, 'exist_to', d.xpath('/add/doc/field[@name="date_to"]')[0].text)
+
+            # add the existance from date if no from date and a to date
+            if not d.xpath('/add/doc/field[@name="exist_from"]'):
+                d = self.add_field(d, 'exist_from', d.xpath('/add/doc/field[@name="date_to"]')[0].text)
+
+            # add the existence to date if no to date and from date
+            if not d.xpath('/add/doc/field[@name="exist_to"]'):
+                d = self.add_field(d, 'exist_to', d.xpath('/add/doc/field[@name="date_from"]')[0].text)
+
 
         # now we want to save the document to self.output_folder
         #
@@ -162,7 +166,7 @@ class Transformer:
             return
 
         add = etree.Element('add')
-        add.append(tmp)
+        add.append(d)
 
         # when testing against a single document, this is the line that spits
         #  the result to stdout for viewing

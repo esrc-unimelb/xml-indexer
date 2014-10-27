@@ -36,6 +36,9 @@
                 <field name="source"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='doreference']" /></field>
                 <field name="source_link"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='doexternalurl']/a/@href" /></field>
                 <field name="rights"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='dorights']" /></field>
+                <xsl:for-each  select="str:split(//dl[@class='content-summary']/dd[@class='dointepretation'], ', ')">
+                    <field name="function"><xsl:value-of select='.'/></field>
+                </xsl:for-each>
                 <xsl:call-template name="thumbnail" />
                 <xsl:call-template name="fullsize" />
             </doc>

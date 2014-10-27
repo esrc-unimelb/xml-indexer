@@ -8,7 +8,7 @@ import magic
 import urlparse
 from lxml import html, etree
 from datetime import datetime, timedelta
-log = logging.getLogger('CRAWLER')
+log = logging.getLogger(__name__)
 
 class Crawler:
 

@@ -11,7 +11,7 @@ from indexer.Transformer import Transformer
 from indexer.Poster import Poster
 from indexer.EADProcessor import EADProcessor
 
-log = logging.getLogger('INDEXER')
+log = logging.getLogger(__name__)
 
 class Indexer:
     def __init__(self, site, config):
