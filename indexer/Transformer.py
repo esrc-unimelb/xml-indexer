@@ -147,14 +147,13 @@ class Transformer:
             if d.xpath('/add/doc/field[@name="date_to"]'):
                 d = self.add_field(d, 'exist_to', d.xpath('/add/doc/field[@name="date_to"]')[0].text)
 
+            # add the existance to date if from date and no to date
+            if d.xpath('/add/doc/field[@name="exist_from"]') and not d.xpath('/add/doc/field[@name="exist_to"]'):
+                d = self.add_field(d, 'exist_to', d.xpath('/add/doc/field[@name="exist_from"]')[0].text)
+
             # add the existance from date if no from date and a to date
-            if not d.xpath('/add/doc/field[@name="exist_from"]'):
-                d = self.add_field(d, 'exist_from', d.xpath('/add/doc/field[@name="date_to"]')[0].text)
-
-            # add the existence to date if no to date and from date
-            if not d.xpath('/add/doc/field[@name="exist_to"]'):
-                d = self.add_field(d, 'exist_to', d.xpath('/add/doc/field[@name="date_from"]')[0].text)
-
+            if not d.xpath('/add/doc/field[@name="exist_from"]') and d.xpath('/add/doc/field[@name="exist_to"]'):
+                d = self.add_field(d, 'exist_from', d.xpath('/add/doc/field[@name="exist_to"]')[0].text)
 
         # now we want to save the document to self.output_folder
         #
