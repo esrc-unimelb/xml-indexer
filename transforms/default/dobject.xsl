@@ -44,6 +44,15 @@
                 <xsl:for-each select="str:split(//dl[@class='content-summary']/dd[@class='dointepretation']/p, '; ')">
                     <field name="tag"><xsl:value-of select="." /></field>
                 </xsl:for-each>
+                <field name="date_created_month">
+                    <xsl:variable name="month" select="str:split(//dl[@class='content-summary']/dd[@class='dodate'], '/')[2]" />
+                    <xsl:value-of select="$month" />
+                </field>
+                <field name="date_created_year">
+                    <xsl:variable name="year" select="str:split(//dl[@class='content-summary']/dd[@class='dodate'], '/')[3]" />
+                    <xsl:value-of select="$year" />
+                </field>
+                <field name="creator"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='docreator']" /></field>
             </doc>
         </add>
     </xsl:template>
