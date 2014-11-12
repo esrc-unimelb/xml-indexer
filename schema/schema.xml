@@ -169,7 +169,7 @@
     <field name="tag" type="string" indexed="true" stored="true" multiValued="true" required="false" />
     <field name="rights" type="string" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="date_created_month" type="string" indexed="true" stored="true" multiValued="false" required="false" />
-    <field name="date_created_string" type="string" indexed="true" stored="true" multiValued="false" required="false" />
+    <field name="date_created_year" type="string" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="creator" type="string" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="thumbnail" type="string" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="fullsize" type="string" indexed="true" stored="true" multiValued="false" required="false" />
