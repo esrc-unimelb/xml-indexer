@@ -41,6 +41,9 @@
                 </xsl:for-each>
                 <xsl:call-template name="thumbnail" />
                 <xsl:call-template name="fullsize" />
+                <xsl:for-each select="str:split(//dl[@class='content-summary']/dd[@class='dointepretation']/p, '; ')">
+                    <field name="tag"><xsl:value-of select="." /></field>
+                </xsl:for-each>
             </doc>
         </add>
     </xsl:template>
