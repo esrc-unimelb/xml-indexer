@@ -35,21 +35,16 @@
                 <field name="source"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='doreference']" /></field>
                 <field name="source_link"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='doexternalurl']/a/@href" /></field>
                 <field name="rights"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='dorights']" /></field>
-                <xsl:for-each  select="str:split(//dl[@class='content-summary']/dd[@class='dointepretation'], ', ')">
-                    <field name="function"><xsl:value-of select='.'/></field>
-                </xsl:for-each>
                 <xsl:call-template name="thumbnail" />
                 <xsl:call-template name="fullsize" />
                 <xsl:for-each select="str:split(//dl[@class='content-summary']/dd[@class='dointepretation']/p, '; ')">
                     <field name="tag"><xsl:value-of select="." /></field>
                 </xsl:for-each>
-                <field name="date_created_month">
-                    <xsl:variable name="month" select="str:split(//dl[@class='content-summary']/dd[@class='dodate'], '/')[2]" />
-                    <xsl:value-of select="$month" />
+                <field name="date_from">
+                    <xsl:value-of select="//dl[@class='content-summary']/dd[@class='dodate']/@standardfromdate" />
                 </field>
-                <field name="date_created_year">
-                    <xsl:variable name="year" select="str:split(//dl[@class='content-summary']/dd[@class='dodate'], '/')[3]" />
-                    <xsl:value-of select="$year" />
+                <field name="date_to">
+                    <xsl:value-of select="//dl[@class='content-summary']/dd[@class='dodate']/@standardtodate" />
                 </field>
                 <field name="creator"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='docreator']" /></field>
             </doc>
