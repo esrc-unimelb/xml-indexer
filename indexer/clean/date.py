@@ -30,6 +30,7 @@ class date_cleanser:
         self.timeformats = [
             "%Y-%m-%d", # 1976-01-01
             "%Y %m %d", # 1976 01 01
+            "%d/%m/%Y", # 01/01/1976
             "%d %B %Y", # 12 January 1997
             "%B %Y",    # February 1998
             "%Y",       # 2004
