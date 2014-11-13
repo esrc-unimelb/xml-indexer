@@ -23,10 +23,10 @@
             <doc>
                 <field name="id"><xsl:value-of select="//meta[@name='DC.Identifier']/@content" /></field>
                 <xsl:call-template name="record_id" />
-                <field name="creator"><xsl:value-of select="//meta[@name='DC.Creator']/@content" /></field>
                 <field name="type">Text</field>
                 <field name="name"><xsl:value-of select="//meta[@name='DC.Title']/@content" /></field>
-                <field name="text"><xsl:value-of select="//body" /></field>
+                <field name="text"><xsl:value-of select="//div[@id='content']" /></field>
+                <field name="text"><xsl:value-of select="//div[@id='main']" /></field>
             </doc>
         </add>
     </xsl:template>
