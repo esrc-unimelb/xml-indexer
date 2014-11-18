@@ -75,6 +75,13 @@
                             <xsl:text>/site</xsl:text>
                             <xsl:value-of select="$thumbpath" />
                         </xsl:when>
+                        <xsl:when test="$thumbImageHref[2] = 'assets'">
+                            <xsl:variable name="docpath" select="str:split(//meta[@name='DC.Identifier']/@content, '/objects')" />
+                            <xsl:variable name="thumbpath" select="str:split(//img[@id='dothumb']/@src, 'assets')[2]" />
+                            <xsl:value-of select="$docpath" />
+                            <xsl:text>/assets</xsl:text>
+                            <xsl:value-of select="$thumbpath" />
+                        </xsl:when>
                     </xsl:choose>
                 </xsl:when>
             </xsl:choose>
