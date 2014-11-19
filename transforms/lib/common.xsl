@@ -15,9 +15,8 @@
     <!-- Extract the dobject type -->
     <xsl:template name="dobject_type">
         <xsl:variable name="type" select="str:split(//meta[@name='DC.Title']/@content, ' - ')" />
-        <field name="type">
-            <xsl:value-of select="$type" />
-        </field>
+        <field name="type"><xsl:value-of select="$type" /></field>
+        <field name="dobject_type"><xsl:value-of select="$type" /></field>
         <field name="main_type">Digital Object</field>
     </xsl:template>
 
@@ -30,9 +29,8 @@
     <!-- Extract the pub resource type -->
     <xsl:template name="pub_resource_type">
         <xsl:variable name="type" select="str:split(//meta[@name='DC.Title']/@content, ' - ')" />
-        <field name="type">
-            <xsl:value-of select="$type" />
-        </field>
+        <field name="type"><xsl:value-of select="$type" /></field>
+        <field name="pub_type"><xsl:value-of select="$type" /></field>
         <field name="main_type">Publication</field>
     </xsl:template>
 
