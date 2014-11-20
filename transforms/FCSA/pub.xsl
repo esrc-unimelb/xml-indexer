@@ -17,27 +17,13 @@
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
-    <xsl:import href="../lib/common.xsl" />
+    <xsl:import href="../lib/pubs-common.xsl" />
 
     <xsl:output method="text" indent="yes" encoding="UTF-8" omit-xml-declaration="yes" />
     <xsl:template match="/">
         <add>
             <doc>
-                <field name="id"><xsl:value-of select="//meta[@name='DC.Identifier']/@content" /></field>
-                <xsl:call-template name="pub_resource_type" />
-                <field name="creator"><xsl:value-of select="//meta[@name='DC.Creator']/@content" /></field>
-                <field name="name">
-                    <xsl:value-of select="//dl[@class='content-summary']/dd[@class='title']" />
-                    <xsl:if test="//dl[@class='content-summary']/dd[@class='secondarytitle']">
-                        <xsl:text>, </xsl:text>
-                        <xsl:value-of select="//dl[@class='content-summary']/dd[@class='secondarytitle']" />
-                    </xsl:if>
-                </field>
-                <field name="author"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='author']" /></field>
-                <field name="editor"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='secondaryauthor']" /></field>
-                <field name="imprint"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='imprint']" /></field>
-                <field name="url"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='url']" /></field>
-                <field name="abstract"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='abstract']" /></field>
+                <xsl:call-template name="publication-common" />
                 <field name="state_long">South Australia</field>
                 <field name="state_short">SA</field>
             </doc>

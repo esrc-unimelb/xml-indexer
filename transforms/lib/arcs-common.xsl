@@ -7,9 +7,12 @@
     exclude-result-prefixes="n str"
     version="1.0">
 
+    <xsl:import href="common.xsl" />
+
     <!-- Extract the common data for archival resources -->
     <xsl:template name="archival-resource-common">
         <field name="id"><xsl:value-of select="//meta[@name='DC.Identifier']/@content" /></field>
+        <xsl:call-template name="record_id" />
         <field name="name"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='title']" /></field>
         <field name="reference"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='arrepref']" /></field>
         <field name="reference_link">

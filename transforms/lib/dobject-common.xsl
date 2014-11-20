@@ -7,9 +7,12 @@
     exclude-result-prefixes="n str"
     version="1.0">
 
+    <xsl:import href="common.xsl" />
+
     <!-- Extract the dobject type -->
     <xsl:template name="dobject-common">
         <field name="id"><xsl:value-of select="//meta[@name='DC.Identifier']/@content" /></field>
+        <xsl:call-template name="record_id" />
         <field name="title"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='title']" /></field>
         <field name="description"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='dodescription']" /></field>
         <field name="source"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='doreference']" /></field>

@@ -7,10 +7,12 @@
     exclude-result-prefixes="n str"
     version="1.0">
 
+    <xsl:import href="common.xsl" />
+
     <!-- Extract the pub resource type -->
     <xsl:template name="publication-common">
         <field name="id"><xsl:value-of select="//meta[@name='DC.Identifier']/@content" /></field>
-
+        <xsl:call-template name="record_id" />
         <field name="name"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='title']" /></field>
         <field name="in"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='secondarytitle']" /></field>
         <field name="author"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='author']" /></field>

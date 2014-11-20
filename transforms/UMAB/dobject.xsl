@@ -21,33 +21,24 @@
     extension-element-prefixes="str"
     version="1.0">
 
-    <xsl:import href="../lib/common.xsl" />
+    <xsl:import href="../lib/dobject-common.xsl" />
 
     <xsl:output method="text" indent="yes" encoding="UTF-8" omit-xml-declaration="yes" />
     <xsl:template match="/">
         <add>
             <doc>
-                <field name="id"><xsl:value-of select="//meta[@name='DC.Identifier']/@content" /></field>
-                <xsl:call-template name="record_id" />
-                <xsl:call-template name="dobject_type" />
-                <field name="name"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='title']" /></field>
-                <field name="text"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='dodescription']" /></field>
-                <field name="source"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='doreference']" /></field>
-                <field name="source_link"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='doexternalurl']/a/@href" /></field>
-                <field name="rights"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='dorights']" /></field>
-                <xsl:call-template name="thumbnail" />
-                <xsl:call-template name="fullsize" />
+                <xsl:call-template name="dobject-common" />
                 <xsl:for-each select="str:split(//dl[@class='content-summary']/dd[@class='dointepretation']/p, '; ')">
                     <xsl:variable name="count" select="position()" />
-                    <field name="{concat('level', $count)}"><xsl:value-of select="." /></field>
+                    <xsl:choose>
+                        <xsl:when test="count &lt; 3">
+                            <field name="{concat('level', $count)}"><xsl:value-of select="." /></field>
+                        </xsl:when>
+                        <xsl:when test="count &gte; 3">
+                            <field name="tag"><xsl:value-of select="." /></field>
+                        </xsl:when>
+                    </xsl:choose>
                 </xsl:for-each>
-                <field name="date_from">
-                    <xsl:value-of select="//dl[@class='content-summary']/dd[@class='dodate']/@standardfromdate" />
-                </field>
-                <field name="date_to">
-                    <xsl:value-of select="//dl[@class='content-summary']/dd[@class='dodate']/@standardtodate" />
-                </field>
-                <field name="creator"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='docreator']" /></field>
             </doc>
         </add>
     </xsl:template>

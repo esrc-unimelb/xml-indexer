@@ -17,21 +17,13 @@
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
-    <xsl:import href="../lib/common.xsl" />
+    <xsl:import href="../lib/arcs-common.xsl" />
 
     <xsl:output method="text" indent="yes" encoding="UTF-8" omit-xml-declaration="yes" />
     <xsl:template match="/">
         <add>
             <doc>
-                <field name="id"><xsl:value-of select="//meta[@name='DC.Identifier']/@content" /></field>
-                <xsl:call-template name="arc_resource_type" />
-                <field name="creator"><xsl:value-of select="//meta[@name='DC.Creator']/@content" /></field>
-                <!-- <field name="name"><xsl:value-of select="//meta[@name='DC.Title']/@content" /></field> -->
-                <field name="name"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='title']" /></field>
-                <field name="repository"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='arrepository']" /></field>
-                <field name="repository_link"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='arrepository']/a/@href" /></field>
-                <field name="reference"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='arrepref']" /></field>
-                <field name="date_from"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='ardate']" /></field>
+                <xsl:call-template name="archival-resource-common" />
                 <field name="state_long">Queensland</field>
                 <field name="state_short">QLD</field>
             </doc>
