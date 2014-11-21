@@ -13,7 +13,7 @@
     <xsl:template name="archival-resource-common">
         <field name="id"><xsl:value-of select="//meta[@name='DC.Identifier']/@content" /></field>
         <xsl:call-template name="record_id" />
-        <field name="name"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='title']" /></field>
+        <field name="title"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='title']" /></field>
         <field name="reference"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='arrepref']" /></field>
         <field name="reference_link">
             <xsl:call-template name="extract-link">
@@ -26,7 +26,7 @@
                 <xsl:with-param name="link" select="//dl[@class='content-summary']/dd[@class='arrepository']/a/@href"></xsl:with-param>
             </xsl:call-template>
         </field>
-        <field name="date_from"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='ardate']" /></field>
+        <field name="date"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='ardate']" /></field>
         <field name="creator"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='arcreator']" /></field>
         <field name="description"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='ardescription']" /></field>
         <field name="type">Archival Resource</field>

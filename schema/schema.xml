@@ -135,6 +135,9 @@
     <field name="data_type" type="string" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="record_id" type="string" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="function" type="string" indexed="true" stored="true" multiValued="true" required="false" />
+    <field name="title" type="string" indexed="true" stored="true" multiValued="false" required="false" />
+    <field name="creator" type="string" indexed="true" stored="true" multiValued="false" required="false" />
+    <field name="description" type="string" indexed="true" stored="true" multiValued="true" required="false" />
 
     <field name="name" type="text_en_splitting" indexed="true" stored="true" multiValued="false" required="false" 
         termVectors="true" termPositions="true" termOffsets="true" />
@@ -146,6 +149,7 @@
         termVectors="true" termPositions="true" termOffsets="true" />
     <field name="abstract" type="text_en_splitting" indexed="true" stored="true" multiValued="false" required="false" />
 
+    <field name="date" type="string" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="date_from" type="date" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="date_to" type="date" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="exist_from" type="date" indexed="true" stored="true" multiValued="false" required="false" />
@@ -162,6 +166,7 @@
     <field name="repository" type="string" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="repository_link" type="string" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="reference" type="string" indexed="true" stored="true" multiValued="false" required="false" />
+    <field name="reference_link" type="string" indexed="true" stored="true" multiValued="false" required="false" />
  
     <!-- Dobject specific -->
     <field name="source" type="string" indexed="true" stored="true" multiValued="false" required="false" />
@@ -173,17 +178,17 @@
     <field name="level4" type="string" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="level5" type="string" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="dobject_type" type="string" indexed="true" stored="true" multiValued="false" required="false" />
-
     <field name="rights" type="string" indexed="true" stored="true" multiValued="false" required="false" />
-    <field name="creator" type="string" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="thumbnail" type="string" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="fullsize" type="string" indexed="true" stored="true" multiValued="false" required="false" />
 
     <!-- Publication specific -->
     <field name="author" type="string" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="editor" type="string" indexed="true" stored="true" multiValued="false" required="false" />
+    <field name="in" type="string" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="imprint" type="string" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="url" type="string" indexed="true" stored="true" multiValued="false" required="false" />
+    <field name="typeofwork" type="string" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="pub_type" type="string" indexed="true" stored="true" multiValued="false" required="false" />
 
     <!-- findandconnect specific fields -->
@@ -219,6 +224,8 @@
   or to add multiple fields to the same field for easier/faster searching.  -->
 
   <copyField source="name" dest="name_sort" />
+  <copyField source="title" dest="name" />
+  <copyField source="description" dest="text" />
   <!-- copy into hints field 
   <copyField source="city" dest="hints" />
 
