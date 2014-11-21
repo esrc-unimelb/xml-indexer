@@ -25,7 +25,6 @@
         <add>
             <doc>
                 <xsl:call-template name="publication-common" />
-                <xsl:call-template name="record_id" />
             </doc>
         </add>
     </xsl:template>

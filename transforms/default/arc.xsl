@@ -25,7 +25,6 @@
         <add>
             <doc>
                 <xsl:call-template name="archival-resource-common" />
-                <xsl:call-template name="record_id" />
             </doc>
         </add>
     </xsl:template>

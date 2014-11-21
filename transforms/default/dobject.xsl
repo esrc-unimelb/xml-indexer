@@ -29,7 +29,6 @@
         <add>
             <doc>
                 <xsl:call-template name="dobject-common" />
-                <xsl:call-template name="record_id" />
             </doc>
         </add>
     </xsl:template>
