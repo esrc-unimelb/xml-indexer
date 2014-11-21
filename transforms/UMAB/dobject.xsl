@@ -31,10 +31,10 @@
                 <xsl:for-each select="str:split(//dl[@class='content-summary']/dd[@class='dointepretation']/p, '; ')">
                     <xsl:variable name="count" select="position()" />
                     <xsl:choose>
-                        <xsl:when test="count &lt; 3">
+                        <xsl:when test="$count &lt; 3">
                             <field name="{concat('level', $count)}"><xsl:value-of select="." /></field>
                         </xsl:when>
-                        <xsl:when test="count &gt;= 3">
+                        <xsl:when test="$count &gt;= 3">
                             <field name="tag"><xsl:value-of select="." /></field>
                         </xsl:when>
                     </xsl:choose>
