@@ -29,6 +29,7 @@
         </field>
         <field name="date"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='dodate']" /></field>
         <field name="creator"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='docreator']" /></field>
+        <field name="control"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='docontrol']" /></field>
         <xsl:variable name="type" select="str:split(//meta[@name='DC.Title']/@content, ' - ')" />
         <field name="type"><xsl:value-of select="$type" /></field>
         <field name="dobject_type"><xsl:value-of select="$type" /></field>
