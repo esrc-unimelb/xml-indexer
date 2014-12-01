@@ -137,6 +137,7 @@
     <field name="function" type="string" indexed="true" stored="true" multiValued="true" required="false" />
     <field name="title" type="string" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="creator" type="string" indexed="true" stored="true" multiValued="false" required="false" />
+    <field name="control" type="string" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="description" type="string" indexed="true" stored="true" multiValued="true" required="false" />
 
     <field name="name" type="text_en_splitting" indexed="true" stored="true" multiValued="false" required="false" 
@@ -225,7 +226,7 @@
 
   <copyField source="name" dest="name_sort" />
   <copyField source="title" dest="name" />
-  <copyField source="description" dest="text" />
+
   <!-- copy into hints field 
   <copyField source="city" dest="hints" />
 
