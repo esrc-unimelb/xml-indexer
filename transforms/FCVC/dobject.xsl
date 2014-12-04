@@ -30,6 +30,7 @@
                 <xsl:call-template name="dobject-common" />
                 <field name="state_long">Victoria</field>
                 <field name="state_short">VIC</field>
+                <field name="resource_type">Photos</field>
             </doc>
         </add>
     </xsl:template>

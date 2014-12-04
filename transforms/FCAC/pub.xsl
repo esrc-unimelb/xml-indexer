@@ -26,6 +26,7 @@
                 <xsl:call-template name="publication-common" />
                 <field name="state_long">Australian Capital Territory</field>
                 <field name="state_short">ACT</field>
+                <field name="resource_type">Publications</field>
             </doc>
         </add>
     </xsl:template>

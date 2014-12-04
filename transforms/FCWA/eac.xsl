@@ -45,6 +45,24 @@
                 <field name="state_long">Western Australia</field>
                 <field name="state_short">WA</field>
                 <xsl:apply-templates select="/n:eac-cpf/n:cpfDescription/n:description/n:biogHist/n:chronList/n:chronItem/n:event" />
+                <xsl:for-each select="/n:eac-cpf/n:cpfDescription/n:description/n:functions/n:function/n:term">
+                    <xsl:variable name="org" select="." />
+                    <xsl:if test="$org = 'Home'">
+                        <field name="resource_type">Homes</field>
+                    </xsl:if>
+                </xsl:for-each>
+                <xsl:for-each select="/n:eac-cpf/n:control/n:localControl[@localType='typeOfEntity']/n:term">
+                    <xsl:variable name="res" select="." />
+                    <xsl:if test="$res= 'Archival Item'">
+                        <field name="resource_type">Records information</field>
+                    </xsl:if>
+                    <xsl:if test="$res= 'Archival Series'">
+                        <field name="resource_type">Records information</field>
+                    </xsl:if>
+                    <xsl:if test="$res= 'Archival Collection'">
+                        <field name="resource_type">Records information</field>
+                    </xsl:if>
+                </xsl:for-each>
             </doc>
         </add>
     </xsl:template>

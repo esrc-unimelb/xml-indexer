@@ -26,6 +26,7 @@
                 <xsl:call-template name="publication-common" />
                 <field name="state_long">Western Australia</field>
                 <field name="state_short">WA</field>
+                <field name="resource_type">Publications</field>
             </doc>
         </add>
     </xsl:template>

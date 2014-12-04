@@ -197,6 +197,7 @@
     <field name="state_short" type="string" indexed="true" stored="true" multiValued="false" required="false" />
     <field name="locality" type="string" indexed="true" stored="true" multiValued="true" required="false" />
     <field name="operator" type="string" indexed="true" stored="true" multiValued="false" required="false" />
+    <field name="resource_type" type="string" indexed="true" stored="true" multiValued="false" required="false" />
 
   </fields>
 

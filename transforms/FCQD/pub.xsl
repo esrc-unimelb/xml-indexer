@@ -26,6 +26,7 @@
                 <xsl:call-template name="publication-common" />
                 <field name="state_long">Queensland</field>
                 <field name="state_short">QLD</field>
+                <field name="resource_type">Publications</field>
             </doc>
         </add>
     </xsl:template>

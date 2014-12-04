@@ -26,6 +26,7 @@
                 <xsl:call-template name="publication-common" />
                 <field name="state_long">Tasmania</field>
                 <field name="state_short">TAS</field>
+                <field name="resource_type">Publications</field>
             </doc>
         </add>
     </xsl:template>
