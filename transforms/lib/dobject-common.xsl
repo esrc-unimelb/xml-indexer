@@ -67,14 +67,14 @@
                         <xsl:value-of select="$tail" />
                     </xsl:when>
                     <xsl:when test="$components[2] = 'assets'">
-                        <xsl:variable name="head" select="str:split(//meta[@name='DC.Identifier']/@content, '/assets')" />
+                        <xsl:variable name="head" select="str:split(//meta[@name='DC.Identifier']/@content, '/objects')" />
                         <xsl:variable name="tail" select="str:split($link, 'assets')[2]" />
                         <xsl:value-of select="$head" />
                         <xsl:text>/assets</xsl:text>
                         <xsl:value-of select="$tail" />
                     </xsl:when>
                     <xsl:when test="$components[2] = 'site'">
-                        <xsl:variable name="head" select="str:split(//meta[@name='DC.Identifier']/@content, '/site')" />
+                        <xsl:variable name="head" select="str:split(//meta[@name='DC.Identifier']/@content, '/objects')" />
                         <xsl:variable name="tail" select="str:split($link, 'site')[2]" />
                         <xsl:value-of select="$head" />
                         <xsl:text>/site</xsl:text>
