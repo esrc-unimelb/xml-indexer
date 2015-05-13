@@ -227,6 +227,7 @@
 
   <copyField source="name" dest="name_sort" />
   <copyField source="title" dest="name" />
+  <copyField source="title" dest="name_sort" />
 
   <!-- copy into hints field 
   <copyField source="city" dest="hints" />
