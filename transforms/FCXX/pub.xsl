@@ -24,6 +24,8 @@
         <add>
             <doc>
                 <xsl:call-template name="publication-common" />
+                <field name="state_long">Australia</field>
+                <field name="state_short">AU</field>
                 <field name="resource_type">Publications</field>
             </doc>
         </add>

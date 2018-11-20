@@ -24,6 +24,8 @@
         <add>
             <doc>
                 <xsl:call-template name="archival-resource-common" />
+                <field name="state_long">Australia</field>
+                <field name="state_short">AU</field>
             </doc>
         </add>
     </xsl:template>

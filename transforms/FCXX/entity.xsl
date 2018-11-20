@@ -32,11 +32,11 @@
                 <field name="date_to"><xsl:value-of select="//dl[@class='content-summary']/dd[@class='enddate']" /></field>
                 <xsl:apply-templates select="//dl[@class='content-summary']/dd[@class='function']" />
                 <field name="text"><xsl:value-of select="//div[@class='entry-details-container']"/></field>
-                <field name="state_long"><xsl:value-of select="/n:eac-cpf/n:cpfDescription/n:description/n:places/n:place/n:placeEntry"/></field>
+                <field name="state_long">Australia</field>
+                <field name="state_short">AU</field>
             </doc>
         </add>
     </xsl:template>
-
     <xsl:template match="//dl[@class='content-summary']/dd[@class='function']">
         <xsl:variable name="function" select="//dl[@class='content-summary']/dd[@class='function']" />
         <!--

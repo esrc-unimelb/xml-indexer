@@ -42,6 +42,10 @@
                     <xsl:value-of select="/n:eac-cpf/n:cpfDescription/n:description/n:biogHist/n:abstract" />
                     <xsl:apply-templates select="/n:eac-cpf/n:cpfDescription/n:description/n:biogHist/n:p" />
                 </field>
+		<field name="state_long">
+                        <xsl:value-of select="/n:eac-cpf/n:cpfDescription/n:description/n:biogHist/n:chronList/n:chronItem/n:placeEntry[@localType='Jurisdiction']" />
+                </field>
+                <!-- <field name="state_short">AU</field> -->
                 <xsl:apply-templates select="/n:eac-cpf/n:cpfDescription/n:description/n:biogHist/n:chronList/n:chronItem/n:event" />
                 <xsl:for-each select="/n:eac-cpf/n:cpfDescription/n:description/n:functions/n:function/n:term">
                     <xsl:variable name="org" select="." />
@@ -49,7 +53,6 @@
                         <field name="resource_type">Homes</field>
                     </xsl:if>
                 </xsl:for-each>
-		<field name="state_long"><xsl:value-of select="/n:eac-cpf/n:cpfDescription/n:description/n:places/n:place/n:placeEntry" /></field>
                 <xsl:for-each select="/n:eac-cpf/n:control/n:localControl[@localType='typeOfEntity']/n:term">
                     <xsl:variable name="res" select="." />
                     <xsl:if test="$res= 'Archival Item'">
