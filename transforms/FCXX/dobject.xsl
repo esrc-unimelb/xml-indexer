@@ -28,8 +28,6 @@
         <add>
             <doc>
                 <xsl:call-template name="dobject-common" />
-                <field name="state_long">Australia</field>
-                <field name="state_short">AU</field>
                 <field name="resource_type">Photos</field>
             </doc>
         </add>

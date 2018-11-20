@@ -25,8 +25,6 @@
                 <field name="type">Text</field>
                 <field name="name"><xsl:value-of select="//meta[@name='DC.Title']/@content" /></field>
                 <field name="text"><xsl:value-of select="//body" /></field>
-                <field name="state_long">Australia</field>
-                <field name="state_short">AU</field>
             </doc>
         </add>
     </xsl:template>
